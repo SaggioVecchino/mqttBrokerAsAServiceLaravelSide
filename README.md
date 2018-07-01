@@ -1,2 +1,2 @@
 # mqttBrokerAsAServiceLaravelSide
-By Lahcen AND Mustapha 
+By Lahcen & Mustapha 
