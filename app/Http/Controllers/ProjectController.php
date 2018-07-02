@@ -22,7 +22,6 @@ class ProjectController extends Controller
                 'password' => Hash::make(md5(request('password')))
             ]
         );
-
         return Project::all();
     }
 
