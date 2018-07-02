@@ -15,6 +15,10 @@ class CreateDeviceGroupsTable extends Migration
     {
         Schema::create('device_groups', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('project_id')->nullable();
+            $table->foreign('project_id')->references('id')->on('projects')->onDelete('set null');
+            $table->string( 'group_name');
+            $table->unique(['group_name','project_id']);
             $table->timestamps();
         });
     }

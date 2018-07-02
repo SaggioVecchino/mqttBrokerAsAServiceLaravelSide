@@ -15,7 +15,14 @@ class CreateTopicsTable extends Migration
     {
         Schema::create('topics', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('project_id')->nullable();
+            $table->string( 'topic_name');
             $table->timestamps();
+            //$table->uuid('uuid');
+            $table->foreign('project_id')->references('id')
+                ->on('projects')
+                ->onDelete('set null');
+            $table->unique(['topic_name','project_id']);
         });
     }
 
