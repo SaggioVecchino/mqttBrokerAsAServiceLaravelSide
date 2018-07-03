@@ -23,12 +23,6 @@ class DeviceController extends Controller
         );
     }
 
-    function edit($id)
-    {
-        $project = Project::find($id);
-
-    }
-
     function auth(Request $request)
     {
         $validatedData = $this->validate($request, [
@@ -57,9 +51,12 @@ class DeviceController extends Controller
                 //device don't exist we have to create it
                 $this::add($request);
             }
+            //return a true flag
         }
         else{
             //Auth error
+
+            //return a false flag
         }
     }
 }
