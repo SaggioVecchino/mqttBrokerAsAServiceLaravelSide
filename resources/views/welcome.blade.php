@@ -98,5 +98,17 @@
                 </div>
             </div>
         </div>
+            <br>
+            <br>
+            <br>
+            @if (count($errors))
+                <ul>
+                    @foreach($errors->all() as $error)
+                        <li>
+                            {{$error}}
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
     </body>
 </html>
