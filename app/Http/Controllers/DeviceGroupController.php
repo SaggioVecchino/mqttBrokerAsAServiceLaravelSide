@@ -11,6 +11,7 @@ class DeviceGroupController extends Controller
 {
     public function add($project_id, Request $request)
     {
+        //we have to check for the rights of adding group_names
         $this->validate($request,
             ["group_name" => "String|Required|max:255|min:5"]);
         //https://martinbean.co.uk/blog/2017/09/28/validating-more-than-request-data-in-laravel-form-requests/
