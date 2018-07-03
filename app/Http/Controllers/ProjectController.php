@@ -19,7 +19,7 @@ class ProjectController extends Controller
         Project::create(
             [
                 'project_name' => request('project_name'),
-                'password' => Hash::make(md5(request('password')))
+                'password' => Hash::make(request('password'))
             ]
         );
         // return Project::all();

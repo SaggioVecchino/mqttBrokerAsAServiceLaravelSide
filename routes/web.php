@@ -17,4 +17,4 @@ Route::get('/', function () {
 
 Route::post('/projects', 'ProjectController@add');
 Route::post('/projects/{project_id}/device_groups', 'DeviceGroupController@add');
-Route::get('/device/auth', 'DeviceController@auth');
+Route::post('/device/auth', 'DeviceController@auth');
