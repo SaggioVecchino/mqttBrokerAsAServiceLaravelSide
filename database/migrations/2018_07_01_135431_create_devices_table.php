@@ -21,6 +21,7 @@ class CreateDevicesTable extends Migration
             $table->unsignedInteger('group_id')->nullable();
             $table->foreign('group_id')->references('id')->on('device_groups')->onDelete('set null');
             $table->unique(['group_id','project_id','device_name']);
+            $table->boolean('connected');
             $table->timestamps();
         });
     }

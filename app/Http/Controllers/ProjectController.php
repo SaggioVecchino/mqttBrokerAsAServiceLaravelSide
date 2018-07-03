@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 
 class ProjectController extends Controller
 {
-    
+
     public function add(Request $request)
     {
         $validatedData = $this->validate($request, [
@@ -22,7 +22,7 @@ class ProjectController extends Controller
                 'password' => Hash::make(md5(request('password')))
             ]
         );
-        return Project::all();
+        // return Project::all();
     }
 
 
