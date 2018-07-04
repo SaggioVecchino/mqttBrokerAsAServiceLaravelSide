@@ -38,6 +38,9 @@ class DeviceController extends Controller
             'password' => 'required|string'
         ]);
 
+            //We have to handle the invalid input by sending
+            //a flag false with a message 'invalid input'
+
         try {
             $passhashed = (Project::findOrFail(request('project_id')))->password;
         } catch (ModelNotFoundException $e) {
