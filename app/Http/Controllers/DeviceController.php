@@ -118,10 +118,10 @@ class DeviceController extends Controller
             return $flag;
         }
     }
-    function disconnect($project_id,$group_id,$device_name){
+    function disconnect($project_id,$group_name,$device_name){
         try{
             $device = (Device::where([
-                ["group_name", "=", $group_id],
+                ["group_name", "=", $group_name],
                 ["project_id", "=", $project_id],
                 ["device_name", "=", $device_name],
             ])->firstOrFail());

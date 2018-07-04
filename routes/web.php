@@ -15,7 +15,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('/projects/{project_id}/{group_id}/disconnect/{device_name}', 'DeviceController@disconnect');
+Route::patch(
+    '/projects/{project_id}/device_groups/{$group_name}/devices/{device_name}/disconnect',
+    'DeviceController@disconnect');//we have to implement token middelware
+
 Route::post('/projects/{project_id}/topics', 'TopicController@add');
 Route::post('/projects/{project_id}/{group_id}', 'Device_groups_topicController@add');
 Route::post('/projects', 'ProjectController@add');
