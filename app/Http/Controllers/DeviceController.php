@@ -115,4 +115,28 @@ class DeviceController extends Controller
             return $flag;
         }
     }
+    function disconnect($project_id,$group_id,$device_name){
+        try{
+            $device = (Device::where([
+                ["group_name", "=", $group_id],
+                ["project_id", "=", $project_id],
+                ["device_name", "=", $device_name],
+            ])->firstOrFail());
+            $device->coonected=false;
+            $device->save();
+            $flag = [
+                "flag" => true,
+                "message" => "Successful deconnexion of the device". request('device_name')
+            ];
+            return $flag;
+        }//we have to check that only the borker can use this methode ...
+        catch (ModelNotFoundException $e)
+        {
+            $flag = [
+                "flag" => false,
+                "message" => "Disconnexion failed, the device". request('device_name'). " doesn\'t exist"
+            ];
+            return $flag;
+        }
+    }
 }

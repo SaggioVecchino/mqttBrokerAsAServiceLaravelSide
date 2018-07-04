@@ -15,6 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::post('/projects/{project_id}/{group_id}/disconnect/{device_name}', 'DeviceController@disconnect');
 Route::post('/projects/{project_id}/topics', 'TopicController@add');
 Route::post('/projects/{project_id}/{group_id}', 'Device_groups_topicController@add');
 Route::post('/projects', 'ProjectController@add');
