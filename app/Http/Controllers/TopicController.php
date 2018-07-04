@@ -9,10 +9,21 @@ use Illuminate\Validation\ValidationException;
 
 class TopicController extends Controller
 {
-    function add($project_id, Request $request){
+    function add($project_id, Request $request)
+    {
         //we have to check for the rights of adding group_names
-        $this->validate($request,
-            ["topic_name" => "String|Required|max:255|min:5"]); //Regex ...
+        $this->validate(
+            $request,
+            [
+                'topic_name' => [
+                    'required',
+                    'string',
+                    'min:5',
+                    'max:255',
+                    'regex:/^([0-9a-zA-Z_ ]+|\+)(\/([0-9a-zA-Z_ ]+|\+))*(\/#)?$/'
+                ]
+            ]
+        );
         $attributes = [
             'project_id' => $project_id,
         ];
