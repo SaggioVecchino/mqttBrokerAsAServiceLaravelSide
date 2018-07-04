@@ -94,17 +94,26 @@ class DeviceController extends Controller
 
                 return $flag;
             }
-            //device exists in database we have to set state of connected to true
-            $device->connected = true;
-            $device->save();
+            if (!$device->connected) {
+                $device->connected = true;
+                $device->save();
 
-            $flag = [
-                'flag' => true,
-                'message' => 'Device already in database.\nState of connection is
+                $flag = [
+                    'flag' => true,
+                    'message' => 'Device already in database.\nState of connection is
                 now set to connected.'
-            ];
+                ];
 
-            return $flag;
+                return $flag;
+            } else {
+                $flag = [
+                    'flag' => false,
+                    'message' => 'Device name already in use.'
+                ];
+    
+                return $flag;
+
+            }
         } else {
             //Auth error
 
@@ -118,26 +127,41 @@ class DeviceController extends Controller
             return $flag;
         }
     }
-    function disconnect($project_id,$group_name,$device_name){
-        try{
-            $device = (Device::where([
+
+
+    function disconnect($project_id, $group_name, $device_name)
+    {
+        //we have to check that only the borker can use this methode
+        try {
+            $group_id = (Device_group::where([
                 ["group_name", "=", $group_name],
+                ["project_id", "=", $project_id]
+            ])->firstOrFail())->id;
+        } catch (ModelNotFoundException $e) {
+            $flag = [
+                "flag" => false,
+                "message" => "Disconnection failed, the group" . $group_name . " doesn\'t exist in the project: " . $project_id
+            ];
+            return $flag;
+        }
+
+        try {
+            $device = (Device::where([
+                ["group_id", "=", $group_id],
                 ["project_id", "=", $project_id],
                 ["device_name", "=", $device_name],
             ])->firstOrFail());
-            $device->coonected=false;
+            $device->connected = false;
             $device->save();
             $flag = [
                 "flag" => true,
-                "message" => "Successful deconnexion of the device". request('device_name')
+                "message" => "Successful deconnection of the device" . $device_name
             ];
             return $flag;
-        }//we have to check that only the borker can use this methode ...
-        catch (ModelNotFoundException $e)
-        {
+        } catch (ModelNotFoundException $e) {
             $flag = [
                 "flag" => false,
-                "message" => "Disconnexion failed, the device". request('device_name'). " doesn\'t exist"
+                "message" => "Disconnection failed, the device" . $device_name . " doesn\'t exist"
             ];
             return $flag;
         }
