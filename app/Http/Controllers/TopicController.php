@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use App\Topic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -18,9 +19,9 @@ class TopicController extends Controller
                 'topic_name' => [
                     'required',
                     'string',
-                    'min:5',
+                    'min:1',
                     'max:255',
-                    'regex:/^([0-9a-zA-Z_ ]+|\+)(\/([0-9a-zA-Z_ ]+|\+))*(\/#)?$/'
+                    'regex:/^([\w ]+|\+)(\/([\w ]+|\+))*(\/\#)?$/'
                 ]
             ]
         );
@@ -36,10 +37,31 @@ class TopicController extends Controller
         }
         Topic::create(
             [
-                'topic_name' => request('topic_name'),
+                'topic_name' => $this::permissionToRegEx(request('topic_name')),
                 'project_id' => $project_id
             ]
         );
-
     }
+
+    private static function permissionToRegEx($topic)
+    {
+        $fields = explode('/', $topic);
+        $regEx = '';
+        foreach ($fields as $field) {
+            if ($field == '+') {
+                $regEx .= '[\\w ]+\\/';
+            } elseif ($field == '#') {
+                $regEx .= '([\\w ]+|\\+)(\\/([\w ]+|\\+))*(\\/\\#)?';
+            } else {
+                $regEx .= $field . '\\/';
+            }
+        }
+        $len = strlen($regEx);
+        if ($regEx {
+            $len - 1} == '/')
+            $regEx = substr($regEx, 0, $len - 2);
+        $regEx = '/^' . $regEx . '$/';
+        return $regEx;
+    }
+
 }
