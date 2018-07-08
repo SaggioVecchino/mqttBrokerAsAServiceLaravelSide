@@ -40,5 +40,19 @@ class Device_groups_topicController extends Controller
             ]
         );
     }
+    function authorizePublish($project_id, $group_name,$topic){
+            $flag = [
+                "flag" => false,
+                "message" => "unable to publish !!!!"
+            ];
+        return $flag;
+    }
+    function authorizeSubscribe($project_id, $group_name,$topic){
+        $flag = [
+            "flag" => false,
+            "message" => "unable to subscribe !!!!"
+        ];
+        return $flag;
+    }
 
 }

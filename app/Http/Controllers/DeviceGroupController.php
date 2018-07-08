@@ -28,7 +28,7 @@ class DeviceGroupController extends Controller
         Device_group::create(
             [
                 'group_name' => request('group_name'),
-                'project_id' => $project_id
+                 'project_id' => $project_id
             ]
         );
         //return Device_group::all();

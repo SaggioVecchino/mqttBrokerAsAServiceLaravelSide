@@ -19,6 +19,13 @@ Route::patch(
     '/projects/{project_id}/device_groups/{group_name}/devices/{device_name}/disconnect',
     'DeviceController@disconnect');//we have to implement token middelware
 
+Route::post(
+    "/projects/{project_id}/device_groups/{group_name}/topics/{topic}/authPublish",
+    'Device_groups_topicController@authorizePublish');
+Route::post(
+    "/projects/{project_id}/device_groups/{group_name}/topics/{topic}/authSubscribe",
+    'Device_groups_topicController@authorizeSubscribe');
+
 Route::post('/projects/{project_id}/topics', 'TopicController@add');
 Route::post('/projects/{project_id}/device_groups_topic/{group_id}',
 'Device_groups_topicController@add');
