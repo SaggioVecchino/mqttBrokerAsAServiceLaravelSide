@@ -108,7 +108,7 @@ class Device_groups_topicController extends Controller
             ->select('topics.topic_name')
             ->get()
             ->first(function ($permission) {
-                return preg_match(TopicController::topicToRegEx($prohibition->topic_name,true),
+                return preg_match(TopicController::topicToRegEx($permission->topic_name,true),
                 request("topic"));
             });
 
@@ -128,7 +128,7 @@ class Device_groups_topicController extends Controller
 
     }
 
-    function authorizeSubscribe($project_id, $group_name, $topic)
+    function authorizeSubscribe($project_id, $group_name, Request $request)
     {
         $this->validate(
             $request,
@@ -162,7 +162,7 @@ class Device_groups_topicController extends Controller
             ['device_groups_topics.project_id', '=', $project_id],
             ['device_groups_topics.group_id', '=', $group_id],
             ['device_groups_topics.allow', '=', false],
-            ['device_groups_topics.type', '=', 'publication']
+            ['device_groups_topics.type', '=', 'subscribtion']
         ])->join('topics', 'topics.id', '=', 'device_groups_topics.topic_id')
             ->select('topics.topic_name')
             ->get()
@@ -183,12 +183,12 @@ class Device_groups_topicController extends Controller
             ['device_groups_topics.project_id', '=', $project_id],
             ['device_groups_topics.group_id', '=', $group_id],
             ['device_groups_topics.allow', '=', true],
-            ['device_groups_topics.type', '=', 'publication']
+            ['device_groups_topics.type', '=', 'subscribtion']
         ])->join('topics', 'topics.id', '=', 'device_groups_topics.topic_id')
             ->select('topics.topic_name')
             ->get()
             ->first(function ($permission) {
-                return preg_match(TopicController::topicToRegEx($prohibition->topic_name,true),
+                return preg_match(TopicController::topicToRegEx($permission->topic_name,true),
                 request("topic"));
             });
 

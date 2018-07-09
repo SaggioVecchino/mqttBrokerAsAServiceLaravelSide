@@ -22,7 +22,7 @@ Route::post(
     "/projects/{project_id}/device_groups/{group_name}/topics/authPublish",
     'Device_groups_topicController@authorizePublish');
 Route::post(
-    "/projects/{project_id}/device_groups/{group_name}/topics/{topic}/authSubscribe",
+    "/projects/{project_id}/device_groups/{group_name}/topics/authSubscribe",
     'Device_groups_topicController@authorizeSubscribe');
 Route::post('/projects/{project_id}/topics', 'TopicController@add');
 Route::post('/projects/{project_id}/device_groups_topic/{group_id}',
