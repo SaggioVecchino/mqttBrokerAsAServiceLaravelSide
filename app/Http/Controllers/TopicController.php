@@ -37,10 +37,14 @@ class TopicController extends Controller
         }
         Topic::create(
             [
-                'topic_name' => $this::permissionToRegEx(request('topic_name')),
+                'topic_name' => request('topic_name'),
                 'project_id' => $project_id
             ]
         );
+    }
+
+    static function topicToRegEx($topic, $allow){
+        return $allow ? self::permissionToRegEx($topic) : self::prohibitionToRegEx($topic);
     }
 
     private static function permissionToRegEx($topic)
@@ -49,7 +53,7 @@ class TopicController extends Controller
         $regEx = '';
         foreach ($fields as $field) {
             if ($field == '+') {
-                $regEx .= '[\\w ]+\\/';
+                $regEx .= '[\\w ]+\\/|\\+\\/';
             } elseif ($field == '#') {
                 $regEx .= '([\\w ]+|\\+)(\\/([\w ]+|\\+))*(\\/\\#)?';
             } else {
@@ -57,9 +61,34 @@ class TopicController extends Controller
             }
         }
         $len = strlen($regEx);
-        if ($regEx {
-            $len - 1} == '/')
+        if ($regEx {$len - 1} == '/')
             $regEx = substr($regEx, 0, $len - 2);
+        $regEx = '/^' . $regEx . '$/';
+        return $regEx;
+    }
+
+    private static function prohibitionToRegEx($topic)
+    {
+        $fields = explode('/', $topic);
+            $regEx = '';
+        if(count($fields))
+            $regEx = '(\\#|';
+        foreach ($fields as $field) {
+            if ($field == '+') {
+                $regEx .= '(([\\w ]+\\/?|\\+\\/?)(\\#|';
+            } elseif ($field == '#') {
+                $regEx .= '((([\\w ]+|\\+)(\\/([\w ]+|\\+))*(\\/\\#)?)(\\#|';
+            } else {
+                $regEx .= '((' . $field . '\\/?|\\+\\/?)(\\#|';
+            }
+        }
+
+        $regEx = substr($regEx, 0, strlen($regEx) - 1);
+
+        for($i = 0 ; $i < 2*count($fields) ; $i ++)
+            $regEx .= ')?';
+        if(count($fields))
+            $regEx .= ')';
         $regEx = '/^' . $regEx . '$/';
         return $regEx;
     }
