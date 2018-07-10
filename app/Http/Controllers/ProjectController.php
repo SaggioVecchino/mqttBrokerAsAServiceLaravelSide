@@ -14,6 +14,7 @@ class ProjectController extends Controller
         $validatedData = $this->validate($request, [
             'project_name' => 'required|string|max:255|min:5',
             'password' => 'required|string|min:6'
+            //we have to add the user authenticated as owner
         ]);
 
         Project::create(

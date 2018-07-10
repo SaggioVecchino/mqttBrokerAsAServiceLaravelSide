@@ -16,8 +16,8 @@ class CreateProjectsTable extends Migration
         Schema::create('projects', function (Blueprint $table) {
             $table->increments('id');
             $table->string('project_name');
-            // $table->uuid('project_uuid')->unique();
             $table->string('password');
+            //we have to add a foreign key to user (owner)
             $table->timestamps();
         });
     }

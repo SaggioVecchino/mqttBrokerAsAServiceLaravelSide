@@ -30,8 +30,7 @@ class CreateDeviceGroupsTopicsTable extends Migration
             ->references('id')
             ->on('topics')
             ->onDelete('set null');
-            $table->unique(['project_id','group_id','topic_id']);
-            // $table->unsignedInteger('level');
+            $table->unique(['project_id','group_id','topic_id','type']);
             $table->enum('type', ['publication', 'subscribtion']);
             $table->boolean('allow');
             $table->timestamps();
