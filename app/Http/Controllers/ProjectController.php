@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Project;
+use App\Project_user;
+use App\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
@@ -25,7 +28,7 @@ class ProjectController extends Controller
                 'password' => Hash::make(request('password'))
             ]
         );
-        // return Project::all();
+        return redirect('/projects');
     }
 
     public function edit($project_id, Request $request)
@@ -55,6 +58,26 @@ class ProjectController extends Controller
         }
         return Project::all();
     }
+
+    function show(){
+        return Project::all();
+    }
+
+
+    public function delete($project_id){
+        try{
+            $project=Project::findOrFail($project_id);
+        }
+        catch (ModelNotFoundException $e)
+        {
+            return Redirect::back()->withErrors(["msg"=>"you are trying to delete an inexistant project"]);
+
+        }
+        $project->delete();
+        return Project::all();
+    }
+
+
 
 
 }
