@@ -54,3 +54,7 @@ Route::post('/projects/{project_id}/device_groups', 'DeviceGroupController@add')
 
 
 Route::post('/device/auth', 'DeviceController@auth');
+
+//-----------------------------------------------------//
+
+Route::patch('/projects/{project_id}/auth', 'ProjectController@edit');
