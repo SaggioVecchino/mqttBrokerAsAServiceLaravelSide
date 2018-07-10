@@ -18,6 +18,9 @@ Route::get('/', function () {
 
 //A revérifier les routes
 
+
+
+
 Route::patch(
     '/projects/{project_id}/device_groups/{group_name}/devices/{device_name}/disconnect',
     'DeviceController@disconnect');//we have to implement token middelware
@@ -54,3 +57,23 @@ Route::post('/projects/{project_id}/device_groups', 'DeviceGroupController@add')
 
 
 Route::post('/device/auth', 'DeviceController@auth');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+
+
+Route::delete("projects/{project_id}","ProjectController@delete");
+
+
+
+Route::get("/projects","ProjectController@show");
+
+
+
+Route::get("/project_user/{project_id}","Project_userController@show");
+
+
+
+Route::post("/project_user","Project_userController@add");
