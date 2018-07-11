@@ -39,53 +39,35 @@ Route::prefix('/projects/{project_id}/device_groups/{group_name}')->group(functi
 Route::post('/device/auth', 'DeviceController@auth');
 
 
-
-
 Route::resources([
     "topics" => "TopicController",
     "devices" => "DeviceController",
     "project_users" => "Project_userController",
-    "device_groups_topics" => "Device_groups_topicController"
+    "device_groups_topics" => "Device_groups_topicController",
+    'projects' => 'ProjectController',
+    'device_groups' => 'DeviceGroupController'
 ]);
 
 
 Route::prefix('/device_groups_topics/{device_groups_topic}')
     ->group(function () {
-        Route::patch("changeType",
+        Route::patch("change_type",
             "Device_groups_topicController@changeType");
 
-        Route::patch("changeVerdict",
+        Route::patch("change_verdict",
             "Device_groups_topicController@changeVerdict");
     });
-
-
-Route::post('/projects/{project_id}/device_groups_topic/{group_id}',
-'Device_groups_topicController@add');
-
-Route::post('/projects', 'ProjectController@add');
-
-
-
-Route::post('/projects/{project_id}/device_groups', 'DeviceGroupController@add');
-
-
-
-
-Route::patch('/projects/{project_id}/auth', 'ProjectController@edit');
-
 
 Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
-
-
-Route::delete("projects/{project_id}","ProjectController@delete");
-
-
-
-Route::get("/projects","ProjectController@show");
-
+Route::prefix('/projects/{project_id}')
+    ->group(function () {
+        Route::patch('change_username', 'ProjectController@changeUsername');
+        Route::patch('change_password', 'ProjectController@changePassword');
+    });
 
 
 Route::get("/project_user/{project_id}/contributors","Project_userController@showContributors");
 Route::delete("/project_user/destroyContributor","Project_userController@destroyContributor");
+
