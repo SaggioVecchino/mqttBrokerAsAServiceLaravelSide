@@ -53,7 +53,7 @@ class TopicController extends Controller
         $regEx = '';
         foreach ($fields as $field) {
             if ($field == '+') {
-                $regEx .= '[\\w ]+\\/|\\+\\/';
+                $regEx .= '([\\w ]+|\\+)\\/';
             } elseif ($field == '#') {
                 $regEx .= '([\\w ]+|\\+)(\\/([\w ]+|\\+))*(\\/\\#)?';
             } else {
