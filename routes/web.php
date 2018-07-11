@@ -19,65 +19,53 @@ Route::get('/', function () {
 //A revérifier les routes
 
 
-
-
 Route::patch(
     '/projects/{project_id}/device_groups/{group_name}/devices/{device_name}/disconnect',
-    'DeviceController@disconnect');//we have to implement token middelware
-
-
+    'DeviceController@disconnect'
+);//we have to implement token middelware
 
 Route::post(
     "/projects/{project_id}/device_groups/{group_name}/topics/authPublish",
-    'Device_groups_topicController@authorizePublish');
-
-
+    'Device_groups_topicController@authorizePublish'
+);
 
 Route::post(
     "/projects/{project_id}/device_groups/{group_name}/topics/authSubscribe",
-    'Device_groups_topicController@authorizeSubscribe');
-
-
+    'Device_groups_topicController@authorizeSubscribe'
+);
 
 Route::post('/projects/{project_id}/topics', 'TopicController@add');
 
-
-
-Route::post('/projects/{project_id}/device_groups_topic/{group_id}',
-'Device_groups_topicController@add');
-
-
-
-Route::post('/projects', 'ProjectController@add');
+Route::post(
+    '/projects/{project_id}/device_groups_topic/{group_id}',
+    'Device_groups_topicController@add'
+);
 
 
 
 Route::post('/projects/{project_id}/device_groups', 'DeviceGroupController@add');
 
-
-
 Route::post('/device/auth', 'DeviceController@auth');
 
-Route::patch('/projects/{project_id}/auth', 'ProjectController@edit');
+
+
+Route::resources(
+    [
+        'projects' => 'ProjectController',
+        'device_groups' => 'DeviceGroupController'
+    ]
+);
+Route::patch('/projects/{project_id}/change_username', 'ProjectController@changeUsername');
+Route::patch('/projects/{project_id}/change_password', 'ProjectController@changePassword');
+
 
 
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+Route::get("/project_user/{project_id}", "Project_userController@show");
 
+Route::delete("/project_user", "Project_userController@delete");
 
-Route::delete("projects/{project_id}","ProjectController@delete");
-
-
-
-Route::get("/projects","ProjectController@show");
-
-
-
-Route::get("/project_user/{project_id}","Project_userController@show");
-
-Route::delete("/project_user","Project_userController@delete");
-
-
-Route::post("/project_user","Project_userController@add");
+Route::post("/project_user", "Project_userController@add");
