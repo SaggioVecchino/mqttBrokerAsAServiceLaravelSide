@@ -2,19 +2,44 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
 use App\Device;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Project;
 use App\Device_group;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class DeviceController extends Controller
 {
-    function add(Request $request)
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
     {
-        $validatedData = $this->validate($request, [
+        return Device::all();
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $this->validate($request, [
             'device_name' => 'required|string|max:255|min:5',
             'project_id' => 'required|integer',
             'group_id' => 'required|integer'
@@ -29,6 +54,85 @@ class DeviceController extends Controller
         );
     }
 
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        try{
+            $device= Device::findOrFail($id);
+        }
+        catch (ModelNotFoundException $e)
+        {
+            return Redirect::back()->withErrors(["msg"=>"the device with the specified id does not exist"]);
+        }
+        return $device;
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+
+        $this->validate(
+            $request,
+            [
+                'device_name' => "required|string|max:255|min:5"
+                //, 'project_id' => 'required|Integer|min:1'
+            ]
+        );
+        try{
+            $device= Device::findOrFail($id);
+        }
+        catch (ModelNotFoundException $e)
+        {
+            return Redirect::back()->withErrors(["msg"=>"you are trying to update an inexistant device"]);
+        }
+        $device->update(["device_name" => request("device_name")]);
+        return Device::all();
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        try{
+            $device= Device::findOrFail($id);
+        }
+        catch (ModelNotFoundException $e)
+        {
+            return Redirect::back()->withErrors(["msg"=>"you are trying to delete an inexistant device"]);
+        }
+        $device->delete();
+        return Device::all();
+    }
+
+
+
+
     function auth(Request $request)
     {
         $validatedData = $this->validate($request, [
@@ -38,8 +142,8 @@ class DeviceController extends Controller
             'password' => 'required|string'
         ]);
 
-            //We have to handle the invalid input by sending
-            //a flag false with a message 'invalid input'
+        //We have to handle the invalid input by sending
+        //a flag false with a message 'invalid input'
 
         try {
             $passhashed = (Project::findOrFail(request('project_id')))->password;
@@ -110,7 +214,7 @@ class DeviceController extends Controller
                     'flag' => false,
                     'message' => 'Device name already in use.'
                 ];
-    
+
                 return $flag;
 
             }
@@ -127,7 +231,6 @@ class DeviceController extends Controller
             return $flag;
         }
     }
-
 
     function disconnect($project_id, $group_name, $device_name)
     {
@@ -166,4 +269,5 @@ class DeviceController extends Controller
             return $flag;
         }
     }
+
 }

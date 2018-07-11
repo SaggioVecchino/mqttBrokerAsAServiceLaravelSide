@@ -20,33 +20,47 @@ Route::get('/', function () {
 
 
 
+Route::prefix('/projects/{project_id}/device_groups/{group_name}')->group(function () {
 
-Route::patch(
-    '/projects/{project_id}/device_groups/{group_name}/devices/{device_name}/disconnect',
-    'DeviceController@disconnect');//we have to implement token middelware
+    Route::patch(
+        '/devices/{device_name}/disconnect',
+        'DeviceController@disconnect');//we have to implement token middelware
+
+    Route::post(
+        "/topics/authPublish",
+        'Device_groups_topicController@authorizePublish');
+
+    Route::post(
+        "/topics/authSubscribe",
+        'Device_groups_topicController@authorizeSubscribe');
+
+});
+
+Route::post('/device/auth', 'DeviceController@auth');
 
 
 
-Route::post(
-    "/projects/{project_id}/device_groups/{group_name}/topics/authPublish",
-    'Device_groups_topicController@authorizePublish');
+
+Route::resources([
+    "topics" => "TopicController",
+    "devices" => "DeviceController",
+    "project_users" => "Project_userController",
+    "device_groups_topics" => "Device_groups_topicController"
+]);
 
 
+Route::prefix('/device_groups_topics/{device_groups_topic}')
+    ->group(function () {
+        Route::patch("changeType",
+            "Device_groups_topicController@changeType");
 
-Route::post(
-    "/projects/{project_id}/device_groups/{group_name}/topics/authSubscribe",
-    'Device_groups_topicController@authorizeSubscribe');
-
-
-
-Route::post('/projects/{project_id}/topics', 'TopicController@add');
-
+        Route::patch("changeVerdict",
+            "Device_groups_topicController@changeVerdict");
+    });
 
 
 Route::post('/projects/{project_id}/device_groups_topic/{group_id}',
 'Device_groups_topicController@add');
-
-
 
 Route::post('/projects', 'ProjectController@add');
 
@@ -56,13 +70,11 @@ Route::post('/projects/{project_id}/device_groups', 'DeviceGroupController@add')
 
 
 
-Route::post('/device/auth', 'DeviceController@auth');
 
 Route::patch('/projects/{project_id}/auth', 'ProjectController@edit');
 
 
 Auth::routes();
-
 Route::get('/home', 'HomeController@index')->name('home');
 
 
@@ -75,9 +87,5 @@ Route::get("/projects","ProjectController@show");
 
 
 
-Route::get("/project_user/{project_id}","Project_userController@show");
-
-Route::delete("/project_user","Project_userController@delete");
-
-
-Route::post("/project_user","Project_userController@add");
+Route::get("/project_user/{project_id}/contributors","Project_userController@showContributors");
+Route::delete("/project_user/destroyContributor","Project_userController@destroyContributor");

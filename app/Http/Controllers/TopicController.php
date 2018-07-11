@@ -2,15 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\DB;
 use App\Topic;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
 
 class TopicController extends Controller
 {
-    function add($project_id, Request $request)
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        return Topic::all();
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
     {
         //we have to check for the rights of adding group_names
         $this->validate(
@@ -22,26 +47,103 @@ class TopicController extends Controller
                     'min:1',
                     'max:255',
                     'regex:/^([\w ]+|\+)(\/([\w ]+|\+))*(\/\#)?$/'
-                ]
+                ],
+                'project_id' => 'required|Integer|min:1'
             ]
         );
-        $attributes = [
-            'project_id' => $project_id,
-        ];
-        $rules = [
-            'project_id' => 'required|Integer|min:1',
-        ];
-        $validator = Validator::make($attributes, $rules);
-        if ($validator->fails()) {
-            throw new ValidationException($validator);
-        }
         Topic::create(
             [
                 'topic_name' => request('topic_name'),
-                'project_id' => $project_id
+                'project_id' => request("project_id")
             ]
         );
     }
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        try{
+            $topic= Topic::findOrFail($id);
+        }
+        catch (ModelNotFoundException $e)
+        {
+            return Redirect::back()->withErrors(["msg"=>"the topic with the specified id does not exist"]);
+        }
+        return $topic;
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $this->validate(
+            $request,
+            [
+                'topic_name' => [
+                    'required',
+                    'string',
+                    'min:1',
+                    'max:255',
+                    'regex:/^([\w ]+|\+)(\/([\w ]+|\+))*(\/\#)?$/'
+                ],
+                'project_id' => 'required|Integer|min:1'
+            ]
+        );
+        try{
+            $topic= Topic::findOrFail($id);
+        }
+        catch (ModelNotFoundException $e)
+        {
+            return Redirect::back()->withErrors(["msg"=>"you are trying to update an inexistant topic"]);
+        }
+        $topic->update(["topic_name" => request("topic_name")]);
+//      $topic->update($request->except(["_token"]));
+        return Topic::all();
+    }
+//    public function changeTopicName()
+//    {
+//
+//    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        try{
+            $topic= Topic::findOrFail($id);
+        }
+        catch (ModelNotFoundException $e)
+        {
+            return Redirect::back()->withErrors(["msg"=>"you are trying to delete an inexistant topic"]);
+        }
+        $topic->delete();
+        return Topic::all();
+    }
+
 
     static function topicToRegEx($topic, $allow){
         return $allow ? self::permissionToRegEx($topic) : self::prohibitionToRegEx($topic);
@@ -70,7 +172,7 @@ class TopicController extends Controller
     private static function prohibitionToRegEx($topic)
     {
         $fields = explode('/', $topic);
-            $regEx = '';
+        $regEx = '';
         if(count($fields))
             $regEx = '(\\#|';
         foreach ($fields as $field) {
@@ -92,5 +194,8 @@ class TopicController extends Controller
         $regEx = '/^' . $regEx . '$/';
         return $regEx;
     }
+
+
+
 
 }
