@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Project_user;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ContributorController extends Controller
 {
@@ -33,9 +34,9 @@ class ContributorController extends Controller
      */
     public function destroy($project_id, $user_id)
     {
-        $contributor = Project_user::where([
-            ['project_id', '=', request('project_id')],
-            ['user_id', '=', request('user_id')]
+        Project_user::where([
+            ['project_id', '=', $project_id],
+            ['user_id', '=', $user_id]
         ])->firstOrFail()->delete();
         return Project_user::all();
     }
