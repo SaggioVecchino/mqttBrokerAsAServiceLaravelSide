@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Device_groups_topic;
 use Illuminate\Http\Request;
 
@@ -48,7 +49,7 @@ class Device_groups_topicController extends Controller
         Device_groups_topic::create(
             [
                 "group_id" => request("group_id"),
-                "project_id" =>request("project_id"),
+                "project_id" => request("project_id"),
                 "topic_id" => request("topic_id"),
                 "allow" => request("allow"),
                 "type" => request("type")
@@ -65,14 +66,7 @@ class Device_groups_topicController extends Controller
      */
     public function show($id)
     {
-        try{
-            $device_group_topic= Device_groups_topic::findOrFail($id);
-        }
-        catch (ModelNotFoundException $e)
-        {
-            return Redirect::back()->withErrors(["msg"=>"the device_group_topic with the specified id does not exist"]);
-        }
-        return $device_group_topic;
+        return Device_groups_topic::findOrFail($id);
     }
 
     /**
@@ -100,29 +94,25 @@ class Device_groups_topicController extends Controller
             [
                 "allow" => "Boolean",
                 "type" => "in:publication,subscribtion",
-             ]);
-        try{
-            $device_group_topic= Device_groups_topic::findOrFail($id);
-        }
-        catch (ModelNotFoundException $e)
-        {
-            return Redirect::back()->withErrors(["msg"=>"you are trying to update an inexistant topic"]);
-        }
-        $device_group_topic->update($request->only(["allow","type"]));
+            ]
+        );
+        $device_group_topic = Device_groups_topic::findOrFail($id)->update($request->only(["allow", "type"]));
         return Device_groups_topic::all();
     }
 
-    public function changeType(Request $request,$id){
+    public function changeType(Request $request, $id)
+    {
         $this->validate($request, [
             'type' => 'required',
         ]);
-        $this->update($request,$id);
+        $this->update($request, $id);
     }
-    public function changeVerdict(Request $request,$id){
+    public function changeVerdict(Request $request, $id)
+    {
         $this->validate($request, [
             'allow' => 'required',
         ]);
-        $this->update($request,$id);
+        $this->update($request, $id);
     }
 
     /**
@@ -133,14 +123,7 @@ class Device_groups_topicController extends Controller
      */
     public function destroy($id)
     {
-        try{
-            $device_group_topic= Device_groups_topic::findOrFail($id);
-        }
-        catch (ModelNotFoundException $e)
-        {
-            return Redirect::back()->withErrors(["msg"=>"you are trying to delete an inexistant device_group_topic"]);
-        }
-        $device_group_topic->delete();
+        Device_groups_topic::findOrFail($id)->delete();
         return Device_groups_topic::all();
     }
 }
