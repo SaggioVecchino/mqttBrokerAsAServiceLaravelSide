@@ -126,4 +126,161 @@ class Device_groups_topicController extends Controller
         Device_groups_topic::findOrFail($id)->delete();
         return Device_groups_topic::all();
     }
+
+    function authorizePublish($project_id, $group_name, Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+                'topic' => [
+                    'required',
+                    'string',
+                    'min:1',
+                    'max:255',
+                    'regex:/^([\w ]+)(\/([\w ]+))*$/'
+                ]
+            ]
+        );
+        try {
+            $group_id = Device_group::where([
+                ['group_name', '=', $group_name],
+                ['project_id', '=', $project_id]
+            ])->firstOrFail()->id;
+        } catch (ModelNotFoundException $e) {
+            //project-group problem
+            $flag = [
+                'flag' => false,
+                'message' =>
+                    'Project: ' . 'project_id' . ' doesn\'t exist or/and Group '
+                    . 'group_name' . ' doesn\'t in the project'
+            ];
+            return $flag;
+        }
+        $disallowed = DB::table('device_groups_topics')->where([
+            ['device_groups_topics.project_id', '=', $project_id],
+            ['device_groups_topics.group_id', '=', $group_id],
+            ['device_groups_topics.allow', '=', false],
+            ['device_groups_topics.type', '=', 'publication']
+        ])->join('topics', 'topics.id', '=', 'device_groups_topics.topic_id')
+            ->select('topics.topic_name')
+            ->get()
+            ->first(function ($prohibition) {
+                return preg_match(
+                    TopicController::topicToRegEx($prohibition->topic_name, false),
+                    request("topic")
+                );
+            });
+        if ($disallowed) {
+            $flag = [
+                "flag" => false,
+                "message" => "disallowed"
+            ];
+            return $flag;
+        }
+        $allowed = DB::table('device_groups_topics')->where([
+            ['device_groups_topics.project_id', '=', $project_id],
+            ['device_groups_topics.group_id', '=', $group_id],
+            ['device_groups_topics.allow', '=', true],
+            ['device_groups_topics.type', '=', 'publication']
+        ])->join('topics', 'topics.id', '=', 'device_groups_topics.topic_id')
+            ->select('topics.topic_name')
+            ->get()
+            ->first(function ($permission) {
+                return preg_match(
+                    TopicController::topicToRegEx($permission->topic_name, true),
+                    request("topic")
+                );
+            });
+        if ($allowed) {
+            $flag = [
+                "flag" => true,
+                "message" => "allowed"
+            ];
+            return $flag;
+        }
+        $flag = [
+            "flag" => false,
+            "message" => "disallowed"
+        ];
+        return $flag;
+    }
+
+
+    function authorizeSubscribe($project_id, $group_name, Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+                'topic' => [
+                    'required',
+                    'string',
+                    'min:1',
+                    'max:255',
+                    'regex:/^([\w ]+|\+)(\/([\w ]+|\+))*(\/\#)?$/'
+                ]
+            ]
+        );
+        try {
+            $group_id = Device_group::where([
+                ['group_name', '=', $group_name],
+                ['project_id', '=', $project_id]
+            ])->firstOrFail()->id;
+        } catch (ModelNotFoundException $e) {
+            //project-group problem
+            $flag = [
+                'flag' => false,
+                'message' =>
+                    'Project: ' . 'project_id' . ' doesn\'t exist or/and Group '
+                    . 'group_name' . ' doesn\'t in the project'
+            ];
+            return $flag;
+        }
+        $disallowed = DB::table('device_groups_topics')->where([
+            ['device_groups_topics.project_id', '=', $project_id],
+            ['device_groups_topics.group_id', '=', $group_id],
+            ['device_groups_topics.allow', '=', false],
+            ['device_groups_topics.type', '=', 'subscribtion']
+        ])->join('topics', 'topics.id', '=', 'device_groups_topics.topic_id')
+            ->select('topics.topic_name')
+            ->get()
+            ->first(function ($prohibition) {
+                return preg_match(
+                    TopicController::topicToRegEx($prohibition->topic_name, false),
+                    request("topic")
+                );
+            });
+        if ($disallowed) {
+            $flag = [
+                "flag" => false,
+                "message" => "disallowed"
+            ];
+            return $flag;
+        }
+        $allowed = DB::table('device_groups_topics')->where([
+            ['device_groups_topics.project_id', '=', $project_id],
+            ['device_groups_topics.group_id', '=', $group_id],
+            ['device_groups_topics.allow', '=', true],
+            ['device_groups_topics.type', '=', 'subscribtion']
+        ])->join('topics', 'topics.id', '=', 'device_groups_topics.topic_id')
+            ->select('topics.topic_name')
+            ->get()
+            ->first(function ($permission) {
+                return preg_match(
+                    TopicController::topicToRegEx($permission->topic_name, true),
+                    request("topic")
+                );
+            });
+        if ($allowed) {
+            $flag = [
+                "flag" => true,
+                "message" => "allowed"
+            ];
+            return $flag;
+        }
+        $flag = [
+            "flag" => false,
+            "message" => "disallowed"
+        ];
+        return $flag;
+    }
 }
