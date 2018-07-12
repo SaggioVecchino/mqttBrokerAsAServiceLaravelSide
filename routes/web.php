@@ -24,15 +24,18 @@ Route::prefix('/projects/{project_id}/device_groups/{group_name}')->group(functi
 
     Route::patch(
         '/devices/{device_name}/disconnect',
-        'DeviceController@disconnect');//we have to implement token middelware
+        'DeviceController@disconnect'
+    );//we have to implement token middelware
 
     Route::post(
         "/topics/authPublish",
-        'Device_groups_topicController@authorizePublish');
+        'Device_groups_topicController@authorizePublish'
+    );
 
     Route::post(
         "/topics/authSubscribe",
-        'Device_groups_topicController@authorizeSubscribe');
+        'Device_groups_topicController@authorizeSubscribe'
+    );
 
 });
 
@@ -51,11 +54,15 @@ Route::resources([
 
 Route::prefix('/device_groups_topics/{device_groups_topic}')
     ->group(function () {
-        Route::patch("change_type",
-            "Device_groups_topicController@changeType");
+        Route::patch(
+            "change_type",
+            "Device_groups_topicController@changeType"
+        );
 
-        Route::patch("change_verdict",
-            "Device_groups_topicController@changeVerdict");
+        Route::patch(
+            "change_verdict",
+            "Device_groups_topicController@changeVerdict"
+        );
     });
 
 Auth::routes();
@@ -65,9 +72,11 @@ Route::prefix('/projects/{project_id}')
     ->group(function () {
         Route::patch('change_username', 'ProjectController@changeUsername');
         Route::patch('change_password', 'ProjectController@changePassword');
+
+        Route::resource('contributors', 'ContributorController')->only(['index', 'destroy']);
     });
 
-
-Route::get("/project_user/{project_id}/contributors","Project_userController@showContributors");
-Route::delete("/project_user/destroyContributor","Project_userController@destroyContributor");
-
+Route::prefix('/users/{user_id}')
+    ->group(function () {
+        Route::resource('contributions', 'ContributionController')->only(['index', 'destroy']);
+    });

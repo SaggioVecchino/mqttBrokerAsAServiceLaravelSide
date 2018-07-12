@@ -62,14 +62,7 @@ class DeviceController extends Controller
      */
     public function show($id)
     {
-        try{
-            $device= Device::findOrFail($id);
-        }
-        catch (ModelNotFoundException $e)
-        {
-            return Redirect::back()->withErrors(["msg"=>"the device with the specified id does not exist"]);
-        }
-        return $device;
+        return Device::findOrFail($id);
     }
 
     /**
@@ -100,14 +93,7 @@ class DeviceController extends Controller
                 //, 'project_id' => 'required|Integer|min:1'
             ]
         );
-        try{
-            $device= Device::findOrFail($id);
-        }
-        catch (ModelNotFoundException $e)
-        {
-            return Redirect::back()->withErrors(["msg"=>"you are trying to update an inexistant device"]);
-        }
-        $device->update(["device_name" => request("device_name")]);
+        Device::findOrFail($id)->update(["device_name" => request("device_name")]);
         return Device::all();
     }
 
@@ -119,14 +105,7 @@ class DeviceController extends Controller
      */
     public function destroy($id)
     {
-        try{
-            $device= Device::findOrFail($id);
-        }
-        catch (ModelNotFoundException $e)
-        {
-            return Redirect::back()->withErrors(["msg"=>"you are trying to delete an inexistant device"]);
-        }
-        $device->delete();
+        Device::findOrFail($id)->delete();
         return Device::all();
     }
 

@@ -58,24 +58,7 @@ class Project_userController extends Controller
      */
     public function show($id)
     {
-        try{
-            $project_user= Project_user::findOrFail($id);
-        }
-        catch (ModelNotFoundException $e)
-        {
-            return Redirect::back()->withErrors(["msg"=>"the project_user with the specified id does not exist"]);
-        }
-        return $project_user;
-    }
-
-    public function showContributors($project_id)
-    {
-        $users = DB::table("project_users")->where([
-            ["project_users.project_id", '=', $project_id]
-        ])->join("users", "users.id", "=", "project_users.user_id")
-            ->select("users.id", "users.email", "users.name")
-            ->get();
-        return $users;
+        return Project_user::findOrFail($id);
     }
 
     /**
@@ -110,34 +93,7 @@ class Project_userController extends Controller
 
     public function destroy($id)
     {
-        try{
-            $project_user= Project_user::findOrFail($id);
-        }
-        catch (ModelNotFoundException $e)
-        {
-            return Redirect::back()->withErrors(["msg"=>"you are trying to delete an inexistant project_user"]);
-        }
-        $project_user->delete();
-        return Project_user::all();
-    }
-
-
-    public function destroyContributor(Request $request)
-    {
-        $this->validate($request, [
-            'project_id' => 'required|integer|min:1',
-            'user_id' => 'required|integer|min:1'
-        ]);
-        $project_user_id = null;
-        try {
-            $contributor = Project_user::where([
-                ['project_id', '=', request('project_id')],
-                ['user_id', '=', request('user_id')]
-            ])->firstOrFail();
-        } catch (ModelNotFoundException $e) {
-            return Redirect::back()->withErrors(['msg', 'No such contributor to such project']);
-        }
-        $contributor->delete();
+        Project_user::findOrFail($id)->delete();
         return Project_user::all();
     }
 }

@@ -66,14 +66,8 @@ class TopicController extends Controller
      */
     public function show($id)
     {
-        try{
-            $topic= Topic::findOrFail($id);
-        }
-        catch (ModelNotFoundException $e)
-        {
-            return Redirect::back()->withErrors(["msg"=>"the topic with the specified id does not exist"]);
-        }
-        return $topic;
+
+        return Topic::findOrFail($id);
     }
 
     /**
@@ -109,12 +103,10 @@ class TopicController extends Controller
                 'project_id' => 'required|Integer|min:1'
             ]
         );
-        try{
-            $topic= Topic::findOrFail($id);
-        }
-        catch (ModelNotFoundException $e)
-        {
-            return Redirect::back()->withErrors(["msg"=>"you are trying to update an inexistant topic"]);
+        try {
+            $topic = Topic::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            return Redirect::back()->withErrors(["msg" => "you are trying to update an inexistant topic"]);
         }
         $topic->update(["topic_name" => request("topic_name")]);
 //      $topic->update($request->except(["_token"]));
@@ -133,19 +125,18 @@ class TopicController extends Controller
      */
     public function destroy($id)
     {
-        try{
-            $topic= Topic::findOrFail($id);
-        }
-        catch (ModelNotFoundException $e)
-        {
-            return Redirect::back()->withErrors(["msg"=>"you are trying to delete an inexistant topic"]);
+        try {
+            $topic = Topic::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            return Redirect::back()->withErrors(["msg" => "you are trying to delete an inexistant topic"]);
         }
         $topic->delete();
         return Topic::all();
     }
 
 
-    static function topicToRegEx($topic, $allow){
+    static function topicToRegEx($topic, $allow)
+    {
         return $allow ? self::permissionToRegEx($topic) : self::prohibitionToRegEx($topic);
     }
 
@@ -163,7 +154,8 @@ class TopicController extends Controller
             }
         }
         $len = strlen($regEx);
-        if ($regEx {$len - 1} == '/')
+        if ($regEx {
+            $len - 1} == '/')
             $regEx = substr($regEx, 0, $len - 2);
         $regEx = '/^' . $regEx . '$/';
         return $regEx;
@@ -173,7 +165,7 @@ class TopicController extends Controller
     {
         $fields = explode('/', $topic);
         $regEx = '';
-        if(count($fields))
+        if (count($fields))
             $regEx = '(\\#|';
         foreach ($fields as $field) {
             if ($field == '+') {
@@ -187,15 +179,12 @@ class TopicController extends Controller
 
         $regEx = substr($regEx, 0, strlen($regEx) - 1);
 
-        for($i = 0 ; $i < 2*count($fields) ; $i ++)
+        for ($i = 0; $i < 2 * count($fields); $i++)
             $regEx .= ')?';
-        if(count($fields))
+        if (count($fields))
             $regEx .= ')';
         $regEx = '/^' . $regEx . '$/';
         return $regEx;
     }
-
-
-
 
 }
