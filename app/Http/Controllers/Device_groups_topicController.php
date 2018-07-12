@@ -1,8 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Device_group;
 use App\Device_groups_topic;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class Device_groups_topicController extends Controller
 {
@@ -143,4 +146,6 @@ class Device_groups_topicController extends Controller
         $device_group_topic->delete();
         return Device_groups_topic::all();
     }
+
+
 }
