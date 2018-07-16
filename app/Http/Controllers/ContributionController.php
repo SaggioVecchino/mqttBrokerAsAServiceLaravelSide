@@ -26,7 +26,7 @@ class ContributionController extends Controller
      *
      * @param  int $user_id
      * @param  int $project_id
-//     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response
      */
     public function destroy($user_id, $project_id)
     {

@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Device_group;
+use App\Device;
+use App\device_groups_topic;
+use Illuminate\Support\Facades\DB;
 
 class DeviceGroupController extends Controller
 {
@@ -22,9 +25,16 @@ class DeviceGroupController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $this->validate(
+            $request,
+            [
+                "project_id" => "required|Integer|min:1",
+            ]
+        );
+        $project_id = request('project_id');
+        return view('create_new_group', compact('project_id'));
     }
 
     /**
@@ -43,13 +53,17 @@ class DeviceGroupController extends Controller
                 "group_name" => "required|string|min:5|max:255",
             ]
         );
-        Device_group::create(
+        $group_id = (Device_group::create(
             [
                 'group_name' => request('group_name'),
                 'project_id' => request('project_id')
             ]
-        );
-        return Device_group::all();
+        ))->id;
+
+
+
+
+        return redirect('/device_groups/' . $group_id);
     }
 
     /**
@@ -60,7 +74,59 @@ class DeviceGroupController extends Controller
      */
     public function show($id)
     {
-        return Device_group::findOrFail($id);
+        $group = Device_group::findOrFail($id);
+        $devices = Device::where('group_id', $id)
+            ->select('device_name')
+            ->get();
+        $permissionsPublications = DB::table('device_groups_topics')
+            ->where([
+                ['device_groups_topics.group_id', '=', $id],
+                ['device_groups_topics.allow', '=', true],
+                ['device_groups_topics.type', '=', 'publication']
+            ])
+            ->join('topics', 'topics.id', '=', 'device_groups_topics.topic_id')
+            ->select('topics.topic_name')
+            ->get();
+        $prohibitionsPublications = DB::table('device_groups_topics')
+            ->where([
+                ['device_groups_topics.group_id', '=', $id],
+                ['device_groups_topics.allow', '=', false],
+                ['device_groups_topics.type', '=', 'publication']
+            ])
+            ->join('topics', 'topics.id', '=', 'device_groups_topics.topic_id')
+            ->select('topics.topic_name')
+            ->get();
+        $permissionsSubscribtions = DB::table('device_groups_topics')
+            ->where([
+                ['device_groups_topics.group_id', '=', $id],
+                ['device_groups_topics.allow', '=', true],
+                ['device_groups_topics.type', '=', 'subscribtion']
+            ])
+            ->join('topics', 'topics.id', '=', 'device_groups_topics.topic_id')
+            ->select('topics.topic_name')
+            ->get();
+        $prohibitionsSubscribtions = DB::table('device_groups_topics')
+            ->where([
+                ['device_groups_topics.group_id', '=', $id],
+                ['device_groups_topics.allow', '=', false],
+                ['device_groups_topics.type', '=', 'subscribtion']
+            ])
+            ->join('topics', 'topics.id', '=', 'device_groups_topics.topic_id')
+            ->select('topics.topic_name')
+            ->get();
+
+
+        return view(
+            'group',
+            compact(
+                'group',
+                'devices',
+                'permissionsPublications',
+                'prohibitionsPublications',
+                'permissionsSubscribtions',
+                'prohibitionsSubscribtions'
+            )
+        );
     }
 
     /**
@@ -71,7 +137,8 @@ class DeviceGroupController extends Controller
      */
     public function edit($id)
     {
-        //
+        $group = Device_group::findOrFail($id);
+        return view('edit_group', compact('group'));
     }
 
     /**
@@ -91,7 +158,7 @@ class DeviceGroupController extends Controller
             ]
         );
         $group->update($request->only('group_name'));
-        return Device_group::all();
+        return redirect('/device_groups/'.$id);
     }
 
     /**

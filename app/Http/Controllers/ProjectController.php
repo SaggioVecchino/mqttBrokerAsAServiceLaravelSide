@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Auth;
+use App\Project_user;
 
 class ProjectController extends Controller
 {
@@ -18,7 +20,16 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        return Project::all();
+
+        $projects = DB::table('users')
+            ->select('users.id')
+            ->where('users.id', Auth::id())
+            ->join('project_users', 'project_users.user_id', '=', 'users.id')
+            ->select('project_users.project_id')
+            ->join('projects', 'projects.id', '=', 'project_users.project_id')
+            ->select('projects.id', 'projects.project_name')
+            ->get();
+        return view('home', compact('projects'));
     }
 
     /**
@@ -28,7 +39,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        //
+        return view('create_new_project');
     }
 
     /**
@@ -39,19 +50,28 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'project_name' => 'required|string|max:255|min:5',
-            'password' => 'required|string|min:6'
+        if (Auth::check()) {
+            $this->validate($request, [
+                'project_name' => 'required|string|max:255|min:5',
+                'password' => 'required|string|min:6'
             //we have to add the user authenticated as owner
-        ]);
+            ]);
 
-        Project::create(
-            [
-                'project_name' => request('project_name'),
-                'password' => Hash::make(request('password'))
-            ]
-        );
-        return redirect('/projects');
+            $project_id = Project::create(
+                [
+                    'project_name' => request('project_name'),
+                    'password' => Hash::make(request('password'))
+                ]
+            )->id;
+            Project_user::create(
+                [
+                    'user_id' => Auth::id(),
+                    'project_id' => $project_id
+                ]
+            );
+            return redirect('/projects/'.$project_id);
+        } else
+            return redirect('/');
     }
 
     /**
@@ -62,7 +82,14 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-        return Project::findOrFail($id);
+        $project = Project::findOrFail($id);
+
+        $groups = DB::table('projects')
+            ->where('projects.id', $id)
+            ->join('device_groups', 'device_groups.project_id', '=', 'projects.id')
+            ->get();        
+
+        return view('project', compact('groups','project'));
     }
 
     /**
@@ -73,7 +100,8 @@ class ProjectController extends Controller
      */
     public function edit($id)
     {
-        //
+        $project = Project::findOrFail($id);
+        return view('edit_project', compact('project'));
     }
 
     /**
@@ -98,14 +126,16 @@ class ProjectController extends Controller
         return Project::all();
     }
 
-    public function changeUsername($id, Request $request){
+    public function changeProjectName($id, Request $request)
+    {
         $this->validate($request, [
             'project_name' => 'required'
         ]);
         return $this->update($request, $id);
     }
 
-    public function changePassword($id, Request $request){
+    public function changePassword($id, Request $request)
+    {
         try {
             $project = Project::findOrFail($id);
         } catch (ModelNotFoundException $e) {
@@ -115,7 +145,6 @@ class ProjectController extends Controller
             'old_password' => 'required',
             'password' => 'required'
         ]);
-
         if (Hash::check(request('old_password'), $project->password)) {
             return $this->update($request, $id);
         } else {

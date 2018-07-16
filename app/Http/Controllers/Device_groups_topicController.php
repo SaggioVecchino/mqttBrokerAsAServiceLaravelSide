@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Device_groups_topic;
 use Illuminate\Http\Request;
+use App\Topic;
+use App\Device_group;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class Device_groups_topicController extends Controller
 {
@@ -22,9 +26,41 @@ class Device_groups_topicController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $this->validate(
+            $request,
+            [
+                "allow" => "required|Boolean",
+                "type" => "required|in:publication,subscribtion",
+                "group_id" => "required|Integer|min:1"
+            ]
+        );
+        $group_name = (Device_group::findOrFail($request->group_id))->group_name;
+        $project_id = (Device_group::findOrFail($request->group_id))->project_id;
+
+        /*$toAvoid = array_map(function ($dgt) {
+            return $dgt->topic_id;
+        }, DB::table('device_groups_topics')->where([
+            ['type', '=', request('type')],
+            ['allow', '=', !request('allow')],
+            ['group_id', '=', request('group_id')],
+        ])->select('topic_id')->get()->toArray());*/
+
+        $topics = DB::table('topics')->where('project_id', '=', $project_id)
+            //->whereNotIn('id', $toAvoid)
+            ->select('topic_name')->get()->toArray();
+
+        $topics_names = array_map(function ($topic) {
+            return $topic->topic_name;
+        }, $topics);
+
+        $values = array_values($topics_names);
+        $stringKeys = array_map('strval', $values);
+
+        $topics_names = array_combine($stringKeys, $values);
+
+        return view('create_permissionprohibition', compact('request', 'group_name', 'topics_names'));
     }
 
     /**
@@ -40,22 +76,42 @@ class Device_groups_topicController extends Controller
             [
                 "allow" => "required|Boolean",
                 "type" => "required|in:publication,subscribtion",
-                "topic_id" => "required|Integer|min:1",
-                "project_id" => "required|Integer|min:1",
-                "group_id" => "required|Integer|min:1"
+                "group_id" => "required|Integer|min:1",
+                'topic_name' => [
+                    'required',
+                    'string',
+                    'min:1',
+                    'max:255',
+                    'regex:/^([\w ]+|\+)(\/([\w ]+|\+))*(\/\#)?$/'
+                ],
             ]
         );
-        // we have to deal with the case in which topic don't have the same project_id here
+
+
+        $project_id = (Device_group::findOrFail(request('group_id')))->project_id;
+        $topic_id = 0;
+
+        try {
+
+            $topic_id = (Topic::where('topic_name', '=', request('topic_name'))
+                ->firstOrFail())->id;
+        } catch (ModelNotFoundException $e) {
+            $topic_id = (Topic::create([
+                'topic_name' => request('topic_name'),
+                'project_id' => $project_id
+            ]))->id;
+        }
+
         Device_groups_topic::create(
             [
-                "group_id" => request("group_id"),
-                "project_id" => request("project_id"),
-                "topic_id" => request("topic_id"),
-                "allow" => request("allow"),
-                "type" => request("type")
+                'group_id' => request('group_id'),
+                'project_id' => $project_id,
+                'topic_id' => $topic_id,
+                'allow' => request('allow'),
+                'type' => request('type')
             ]
         );
-        return Device_groups_topic::all();
+        return redirect('/device_groups/' . request('group_id'));
     }
 
     /**
@@ -107,6 +163,7 @@ class Device_groups_topicController extends Controller
         ]);
         $this->update($request, $id);
     }
+
     public function changeVerdict(Request $request, $id)
     {
         $this->validate($request, [
@@ -166,7 +223,7 @@ class Device_groups_topicController extends Controller
             ->get()
             ->first(function ($prohibition) {
                 return preg_match(
-                    TopicController::topicToRegEx($prohibition->topic_name, false),
+                    Topic::topicToRegEx($prohibition->topic_name, false),
                     request("topic")
                 );
             });
@@ -187,7 +244,7 @@ class Device_groups_topicController extends Controller
             ->get()
             ->first(function ($permission) {
                 return preg_match(
-                    TopicController::topicToRegEx($permission->topic_name, true),
+                    Topic::topicToRegEx($permission->topic_name, true),
                     request("topic")
                 );
             });
@@ -245,7 +302,7 @@ class Device_groups_topicController extends Controller
             ->get()
             ->first(function ($prohibition) {
                 return preg_match(
-                    TopicController::topicToRegEx($prohibition->topic_name, false),
+                    Topic::topicToRegEx($prohibition->topic_name, false),
                     request("topic")
                 );
             });
@@ -266,7 +323,7 @@ class Device_groups_topicController extends Controller
             ->get()
             ->first(function ($permission) {
                 return preg_match(
-                    TopicController::topicToRegEx($permission->topic_name, true),
+                    Topic::topicToRegEx($permission->topic_name, true),
                     request("topic")
                 );
             });

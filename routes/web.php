@@ -70,7 +70,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::prefix('/projects/{project_id}')
     ->group(function () {
-        Route::patch('change_username', 'ProjectController@changeUsername');
+        Route::patch('change_project_name', 'ProjectController@changeProjectName');
         Route::patch('change_password', 'ProjectController@changePassword');
 
         Route::resource('contributors', 'ContributorController')->only(['index', 'destroy']);
