@@ -73,6 +73,9 @@ Route::prefix('/projects/{project_id}')
         Route::patch('change_project_name', 'ProjectController@changeProjectName');
         Route::patch('change_password', 'ProjectController@changePassword');
 
+        Route::get('specify_data', 'ProjectController@specify_data');
+        Route::post('show_data', 'ProjectController@show_data');
+
         Route::resource('contributors', 'ContributorController')->only(['index', 'destroy']);
     });
 

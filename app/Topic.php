@@ -8,6 +8,24 @@ class Topic extends Model
 {
     protected $guarded = [];
 
+    public static function topicsToRegEx($topics)
+    {
+        if (count($topics) == 0)
+            return '/^$/';
+        $regEx = '/^((' . substr(
+            self::topicToRegEx($topics[0], true),
+            2,
+            -2
+        ) . ')';
+        for ($i = 1; $i < count($topics); $i++) {
+            $regEx .= '|(' . substr(
+                self::topicToRegEx($topics[$i], true),
+                2,
+                -2
+            ) . ')';
+        }
+        return $regEx . ')$/';
+    }
 
     public static function topicToRegEx($topic, $allow)
     {

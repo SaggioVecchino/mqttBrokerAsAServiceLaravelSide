@@ -13,7 +13,7 @@
                 <div class="card-header"><b>ID:</b> {{ $project->id }}<br><b>Project name:</b> {{ $project->project_name }}</div>
                 <div class="card-body">
                 <ul>
-                    <li><a href="#">show statistics</a></li>
+                    <li><a href="/projects/{{$project->id}}/specify_data">show statistics</a></li>
                     <li><a href="/projects/{{$project->id}}">show groups</a></li>
                     <li><a href="/projects/{{$project->id}}/edit">edit</a></li>
                 </ul>

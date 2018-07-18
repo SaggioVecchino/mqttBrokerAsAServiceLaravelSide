@@ -60,9 +60,6 @@ class DeviceGroupController extends Controller
             ]
         ))->id;
 
-
-
-
         return redirect('/device_groups/' . $group_id);
     }
 
@@ -158,7 +155,7 @@ class DeviceGroupController extends Controller
             ]
         );
         $group->update($request->only('group_name'));
-        return redirect('/device_groups/'.$id);
+        return redirect('/device_groups/' . $id);
     }
 
     /**

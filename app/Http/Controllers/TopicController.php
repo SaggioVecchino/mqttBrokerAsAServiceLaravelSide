@@ -46,7 +46,7 @@ class TopicController extends Controller
                     'string',
                     'min:1',
                     'max:255',
-                    'regex:/^([\w ]+|\+)(\/([\w ]+|\+))*(\/\#)?$/'
+                    'regex:/^(([\w ]+|\+)(\/([\w ]+|\+))*(\/\#)?|#)$/'
                 ],
                 'project_id' => 'required|Integer|min:1'
             ]
@@ -98,7 +98,7 @@ class TopicController extends Controller
                     'string',
                     'min:1',
                     'max:255',
-                    'regex:/^([\w ]+|\+)(\/([\w ]+|\+))*(\/\#)?$/'
+                    'regex:/^(([\w ]+|\+)(\/([\w ]+|\+))*(\/\#)?|#)$/'
                 ],
                 'project_id' => 'required|Integer|min:1'
             ]

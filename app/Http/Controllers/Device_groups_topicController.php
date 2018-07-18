@@ -82,11 +82,10 @@ class Device_groups_topicController extends Controller
                     'string',
                     'min:1',
                     'max:255',
-                    'regex:/^([\w ]+|\+)(\/([\w ]+|\+))*(\/\#)?$/'
+                    'regex:/^(([\w ]+|\+)(\/([\w ]+|\+))*(\/\#)?|#)$/'
                 ],
             ]
         );
-
 
         $project_id = (Device_group::findOrFail(request('group_id')))->project_id;
         $topic_id = 0;
@@ -273,7 +272,7 @@ class Device_groups_topicController extends Controller
                     'string',
                     'min:1',
                     'max:255',
-                    'regex:/^([\w ]+|\+)(\/([\w ]+|\+))*(\/\#)?$/'
+                    'regex:/^(([\w ]+|\+)(\/([\w ]+|\+))*(\/\#)?|#)$/'
                 ]
             ]
         );

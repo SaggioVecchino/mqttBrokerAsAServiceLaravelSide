@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 use App\Project_user;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
+use App\Topic;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 
 class ProjectController extends Controller
 {
@@ -69,7 +74,7 @@ class ProjectController extends Controller
                     'project_id' => $project_id
                 ]
             );
-            return redirect('/projects/'.$project_id);
+            return redirect('/projects/' . $project_id);
         } else
             return redirect('/');
     }
@@ -87,9 +92,9 @@ class ProjectController extends Controller
         $groups = DB::table('projects')
             ->where('projects.id', $id)
             ->join('device_groups', 'device_groups.project_id', '=', 'projects.id')
-            ->get();        
+            ->get();
 
-        return view('project', compact('groups','project'));
+        return view('project', compact('groups', 'project'));
     }
 
     /**
@@ -163,5 +168,141 @@ class ProjectController extends Controller
     {
         Project::findOrFail($id)->delete();
         return Project::all();
+    }
+
+    public function specify_data($project_id)
+    {
+        $project = Project::findOrFail($project_id);
+        return view('specify_data', compact('project'));
+    }
+
+    /**
+     * get data specified by the request
+     *
+     * @param  int  $id
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function show_data($project_id, Request $request)
+    {
+        Validator::make(array('project_id' => $project_id), [
+            'project_id' => 'required|numeric|min:1',
+        ])->validate();
+
+        $interval_enum = ['Y', 'M', 'W', 'D', 'H'];
+        $freq_enum = ['M', 'W', 'D', 'H', 'Mn'];
+
+        $this->validate($request, [
+            'devices' => 'array',
+            'devices.*' => 'array',
+            'devices.*.group_name' => 'string|max:255|min:5',
+            'devices.*.device_name' => 'string|min:5|max:255',
+            'topics' => 'required|array|min:1',
+            'topics.*' => [
+                'required',
+                'string',
+                'min:1',
+                'max:255',
+                'regex:/^(([\w ]+|\+)(\/([\w ]+|\+))*(\/\#)?|#)$/'
+            ],
+            'interval' => [
+                'required',
+                Rule::in($interval_enum),
+            ],
+            'freq' => [
+                'required',
+                Rule::in($freq_enum),
+            ],
+            'agg' => [
+                'required',
+                Rule::in(['min', 'max', 'count', 'avg', 'sum']),
+            ],
+        ]);
+
+        $interval = request('interval');
+        Validator::make($request->only('freq'), [
+            'freq' => [
+                function ($attribute, $value, $fail)
+                    use ($interval, $interval_enum, $freq_enum) {
+                    if ($value !== 'Mn' &&
+                        array_search($value, $freq_enum)
+                        < array_search($interval, $interval_enum)) {
+                        return $fail('Invalid combination of interval and frequence.');
+                    }
+                },
+            ],
+        ])->validate();
+
+        $body = array();
+        $body['project_id'] = $project_id;
+        $body['topics'] = Topic::topicsToRegEx(array_unique(request('topics')));
+        $body['interval'] = 'T' . request('interval');
+        $body['freq'] = request('freq');
+        $body['agg'] = request('agg');
+
+        try {
+            if (request('devices') != null) {
+                $devices = array_values(request('devices'));
+            //to be sure we have indexes 0.. 1.. 2.. 3.. (escape any tentative aiming to break the code)
+
+                $groups = array();
+                $potentielDoublon = array();
+                $count1 = count($devices);
+                $count2 = $count1;
+                for ($i = 0; $i < $count1; $i++) {
+                    if (!array_key_exists('device_name', $devices[$i])) {
+                        if (!in_array($devices[$i]['group_name'], $groups)) {
+                            $groups[] = $devices[$i]['group_name'];
+                        }
+                    } else {
+                        if (!array_key_exists($devices[$i]['group_name'], $potentielDoublon)) {
+                            $potentielDoublon[$devices[$i]['group_name']] = array($devices[$i]['device_name']);
+                        } elseif (in_array($devices[$i]['device_name'], $potentielDoublon[$devices[$i]['group_name']])) {
+                            unset($devices[$i]);
+                            $count2--;
+                        }
+                    }
+                }
+
+                $devices = array_values($devices);//we didn't use array_splice()
+
+                for ($i = 0; $i < $count2; $i++) {
+                    if (!array_key_exists('device_name', $devices[$i])
+                        || in_array($devices[$i]['group_name'], $groups)) {
+                        unset($devices[$i]);
+                    }
+                }
+
+                if (count($groups))
+                    $body['groups'] = $groups;
+
+                if (count($devices))
+                    $body['devices'] = array_values($devices);//we didn't use array_splice()
+            }
+        } catch (\Exception $e) {
+            return Redirect::back()->withErrors(['Device specified without his group name !']);
+        }
+        try {
+            $requestContent = [
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json; charset=UTF-8'
+                ],
+                'json' => $body
+            ];
+
+            $link = '192.168.43.3:1233';
+
+            $response = json_decode((new Client())->request('POST', 'http://' . $link . '/data/' . $project_id, $requestContent)
+                ->getBody()->getContents());
+            return view('show_data', compact('response','project_id'));
+            //dd($response);
+        } catch (RequestException $re) {
+            //dd($re);
+            return Redirect::back()->withErrors(['Error while handling the request, please try again!']);
+        }
+
+
+
     }
 }
