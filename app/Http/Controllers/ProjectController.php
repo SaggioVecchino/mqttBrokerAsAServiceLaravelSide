@@ -144,7 +144,7 @@ class ProjectController extends Controller
         try {
             $project = Project::findOrFail($id);
         } catch (ModelNotFoundException $e) {
-            return Redirect::back()->withErrors(['msg', 'project_id doesn\'t exist']);
+            return Redirect::back()->withErrors(['project_id doesn\'t exist']);
         }
         $this->validate($request, [
             'old_password' => 'required',
@@ -153,7 +153,7 @@ class ProjectController extends Controller
         if (Hash::check(request('old_password'), $project->password)) {
             return $this->update($request, $id);
         } else {
-            return Redirect::back()->withErrors(['msg', 'Incorrect password']);
+            return Redirect::back()->withErrors(['Incorrect password']);
         }
     }
 
@@ -185,20 +185,21 @@ class ProjectController extends Controller
      */
     public function show_data($project_id, Request $request)
     {
+
         Validator::make(array('project_id' => $project_id), [
             'project_id' => 'required|numeric|min:1',
         ])->validate();
 
         $interval_enum = ['Y', 'M', 'W', 'D', 'H'];
         $freq_enum = ['M', 'W', 'D', 'H', 'Mn'];
-
         $this->validate($request, [
-            'devices' => 'array',
-            'devices.*' => 'array',
-            'devices.*.group_name' => 'string|max:255|min:5',
-            'devices.*.device_name' => 'string|min:5|max:255',
-            'topics' => 'required|array|min:1',
-            'topics.*' => [
+            'requestSets' => 'required|array',
+            'requestSets.*.devices' => 'array',
+            'requestSets.*.devices.*' => 'required|array',
+            'requestSets.*.devices.*.group_name' => 'required|string|max:255|min:5',
+            'requestSets.*.devices.*.device_name' => 'string|min:5|max:255',
+            'requestSets.*.topics' => 'required|array|min:1',
+            'requestSets.*.topics.*' => [
                 'required',
                 'string',
                 'min:1',
@@ -217,6 +218,10 @@ class ProjectController extends Controller
                 'required',
                 Rule::in(['min', 'max', 'count', 'avg', 'sum']),
             ],
+            'type' => [
+                'required',
+                Rule::in(['line', 'bar']),
+            ]
         ]);
 
         $interval = request('interval');
@@ -235,54 +240,62 @@ class ProjectController extends Controller
 
         $body = array();
         $body['project_id'] = $project_id;
-        $body['topics'] = Topic::topicsToRegEx(array_unique(request('topics')));
         $body['interval'] = 'T' . request('interval');
         $body['freq'] = request('freq');
         $body['agg'] = request('agg');
 
-        try {
-            if (request('devices') != null) {
-                $devices = array_values(request('devices'));
-            //to be sure we have indexes 0.. 1.. 2.. 3.. (escape any tentative aiming to break the code)
+        $requestSets = array_values(request('requestSets'));
+        //to be sure we have indexes 0.. 1.. 2.. 3.. (escape any tentative aiming to break the code)
 
-                $groups = array();
-                $potentielDoublon = array();
-                $count1 = count($devices);
-                $count2 = $count1;
-                for ($i = 0; $i < $count1; $i++) {
-                    if (!array_key_exists('device_name', $devices[$i])) {
-                        if (!in_array($devices[$i]['group_name'], $groups)) {
-                            $groups[] = $devices[$i]['group_name'];
+        for ($l = 0; $l < count(request('requestSets')); $l++) {
+            $body['requestSets'][$l]['topics'] =
+                Topic::topicsToRegEx(array_unique($requestSets[$l]['topics']));
+            try {
+                if (isset($requestSets[$l]['devices'])) {
+                    $devices = array_values($requestSets[$l]['devices']);
+                    //to be sure we have indexes 0.. 1.. 2.. 3.. (escape any tentative aiming to break the code)
+
+                    $groups = array();
+                    $potentielDoublon = array();
+                    $count1 = count($devices);
+                    $count2 = $count1;
+                    for ($i = 0; $i < $count1; $i++) {
+                        if (!array_key_exists('device_name', $devices[$i])) {
+                            if (!in_array($devices[$i]['group_name'], $groups)) {
+                                $groups[] = $devices[$i]['group_name'];
+                            }
+                        } else {
+                            if (!array_key_exists($devices[$i]['group_name'], $potentielDoublon)) {
+                                $potentielDoublon[$devices[$i]['group_name']] = array($devices[$i]['device_name']);
+                            } elseif (in_array($devices[$i]['device_name'], $potentielDoublon[$devices[$i]['group_name']])) {
+                                unset($devices[$i]);
+                                $count2--;
+                            }
                         }
-                    } else {
-                        if (!array_key_exists($devices[$i]['group_name'], $potentielDoublon)) {
-                            $potentielDoublon[$devices[$i]['group_name']] = array($devices[$i]['device_name']);
-                        } elseif (in_array($devices[$i]['device_name'], $potentielDoublon[$devices[$i]['group_name']])) {
+                    }
+
+                    $devices = array_values($devices);//we didn't use array_splice()
+
+                    for ($i = 0; $i < $count2; $i++) {
+                        if (!array_key_exists('device_name', $devices[$i])
+                            || in_array($devices[$i]['group_name'], $groups)) {
                             unset($devices[$i]);
-                            $count2--;
                         }
                     }
+
+                    if (count($groups))
+                        $body['requestSets'][$l]['groups'] = $groups;
+
+                    if (count($devices))
+                        $body['requestSets'][$l]['devices'] = array_values($devices);//we didn't use array_splice()
                 }
-
-                $devices = array_values($devices);//we didn't use array_splice()
-
-                for ($i = 0; $i < $count2; $i++) {
-                    if (!array_key_exists('device_name', $devices[$i])
-                        || in_array($devices[$i]['group_name'], $groups)) {
-                        unset($devices[$i]);
-                    }
-                }
-
-                if (count($groups))
-                    $body['groups'] = $groups;
-
-                if (count($devices))
-                    $body['devices'] = array_values($devices);//we didn't use array_splice()
+            } catch (\Exception $e) {
+                return Redirect::back()->withErrors(['Device specified without his group name !']);
             }
-        } catch (\Exception $e) {
-            return Redirect::back()->withErrors(['Device specified without his group name !']);
         }
+
         try {
+
             $requestContent = [
                 'headers' => [
                     'Accept' => 'application/json',
@@ -291,18 +304,18 @@ class ProjectController extends Controller
                 'json' => $body
             ];
 
-            $link = '192.168.43.3:1233';
+            $link = '192.168.1.114:1233';
 
             $response = json_decode((new Client())->request('POST', 'http://' . $link . '/data/' . $project_id, $requestContent)
                 ->getBody()->getContents());
-            return view('show_data', compact('response','project_id'));
-            //dd($response);
+
+            $type = request('type');
+            $freq = request('freq');
+            return view('show_data', compact('response', 'project_id', 'type', 'interval', 'freq'));
         } catch (RequestException $re) {
-            //dd($re);
             return Redirect::back()->withErrors(['Error while handling the request, please try again!']);
         }
 
-
-
     }
+
 }

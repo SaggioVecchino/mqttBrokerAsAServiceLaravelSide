@@ -23,7 +23,7 @@
             </div>
             <br>
             <div class="card">
-                <div class="card-header"><b>Permissions Publications:</b>
+                <div class="card-header"><b>Permissions on publications:</b>
                 <br>
                 <a href="/device_groups_topics/create?type=publication&amp;allow=1&amp;group_id={{$group->id}}">+add</a></div>
                 <div class="card-body">
@@ -38,7 +38,7 @@
                 @endif
                 </div>
 
-                <div class="card-header"><b>Prohibitions Publications:</b>
+                <div class="card-header"><b>Prohibitions on publications:</b>
                 <br>
                 <a href="/device_groups_topics/create?type=publication&amp;allow=0&amp;group_id={{$group->id}}">+add</a></div>
                 <div class="card-body">
@@ -53,7 +53,7 @@
                 @endif
                 </div>
 
-                <div class="card-header"><b>Permissions Subscribtions:</b>
+                <div class="card-header"><b>Permissions on subscribtions:</b>
                 <br>
                 <a href="/device_groups_topics/create?type=subscribtion&amp;allow=1&amp;group_id={{$group->id}}">+add</a></div>
                 <div class="card-body">
@@ -68,7 +68,7 @@
                 @endif
                 </div>
 
-                <div class="card-header"><b>Prohibitions Subscribtions:</b>
+                <div class="card-header"><b>Prohibitions on subscribtions:</b>
                 <br>
                 <a href="/device_groups_topics/create?type=subscribtion&amp;allow=0&amp;group_id={{$group->id}}">+add</a></div>
                 <div class="card-body">
