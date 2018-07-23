@@ -8,9 +8,31 @@ use App\Topic;
 use App\Device_group;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Route;
 
 class Device_groups_topicController extends Controller
 {
+
+    public function __construct(Request $request)
+    {
+        $this->middleware('auth');
+        $this->middleware(
+            'userHasDeviceGroupTopic:' . Route::input('device_group_topic'),
+            ['except' => [
+                'index',
+                'create',
+                'store',
+                'authorizePublish',
+                'authorizeSubscribe'
+            ]]
+        );
+        $this->middleware('userHasGroup:' . request('group_id'), ['only' => [
+            'store',
+            'create'
+        ]]);
+    }
+
+
     /**
      * Display a listing of the resource.
      *

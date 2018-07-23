@@ -16,10 +16,6 @@ Route::get('/', function () {
 });
 
 
-//A revérifier les routes
-
-
-
 Route::prefix('/projects/{project_id}/device_groups/{group_name}')->group(function () {
 
     Route::patch(
@@ -41,7 +37,6 @@ Route::prefix('/projects/{project_id}/device_groups/{group_name}')->group(functi
 
 Route::post('/device/auth', 'DeviceController@auth');
 
-
 Route::resources([
     "topics" => "TopicController",
     "devices" => "DeviceController",
@@ -50,7 +45,6 @@ Route::resources([
     'projects' => 'ProjectController',
     'device_groups' => 'DeviceGroupController'
 ]);
-
 
 Route::prefix('/device_groups_topics/{device_groups_topic}')
     ->group(function () {
@@ -68,18 +62,17 @@ Route::prefix('/device_groups_topics/{device_groups_topic}')
 Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::prefix('/projects/{project_id}')
-    ->group(function () {
-        Route::patch('change_project_name', 'ProjectController@changeProjectName');
-        Route::patch('change_password', 'ProjectController@changePassword');
+Route::prefix('/projects/{project}')->group(function () {
+    Route::patch('change_project_name', 'ProjectController@changeProjectName');
+    Route::patch('change_password', 'ProjectController@changePassword');
 
-        Route::get('specify_data', 'ProjectController@specify_data');
-        Route::post('show_data', 'ProjectController@show_data');
+    Route::get('specify_data', 'ProjectController@specify_data');
+    Route::post('show_data', 'ProjectController@show_data');
 
-        Route::resource('contributors', 'ContributorController')->only(['index', 'destroy']);
-    });
+    Route::resource('contributors', 'ContributorController')->only(['index', 'destroy']);
+});
 
-Route::prefix('/users/{user_id}')
-    ->group(function () {
-        Route::resource('contributions', 'ContributionController')->only(['index', 'destroy']);
-    });
+
+Route::prefix('/users/{user_id}')->group(function () {
+    Route::resource('contributions', 'ContributionController')->only(['index', 'destroy']);
+});

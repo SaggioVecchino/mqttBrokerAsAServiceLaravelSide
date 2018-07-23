@@ -6,9 +6,23 @@ use App\Topic;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 
 class TopicController extends Controller
 {
+
+    public function __construct(Request $request)
+    {
+        $this->middleware('auth');
+        $this->middleware('userHasTopic:' . Route::input('topic'), ['except' => [
+            'index',
+            'create',
+            'store'
+        ]]);
+        $this->middleware('userHasProject:' . request('project_id'), ['only' => ['store']]);
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -66,7 +80,6 @@ class TopicController extends Controller
      */
     public function show($id)
     {
-
         return Topic::findOrFail($id);
     }
 
