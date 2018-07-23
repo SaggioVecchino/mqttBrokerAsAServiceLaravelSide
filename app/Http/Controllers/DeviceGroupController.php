@@ -7,9 +7,31 @@ use App\Device_group;
 use App\Device;
 use App\device_groups_topic;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class DeviceGroupController extends Controller
 {
+
+    public function __construct(Request $request)
+    {
+        $this->middleware('auth');
+        $this->middleware('userHasGroup:' . Route::input('device_group'), ['except' => [
+            'index',
+            'create',
+            'store'
+        ]]);
+        $this->middleware('userHasProject:' . request('project_id'), ['only' => [
+            'create',
+            'store'
+        ]]);
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -53,13 +75,17 @@ class DeviceGroupController extends Controller
                 "group_name" => "required|string|min:5|max:255",
             ]
         );
-        $group_id = (Device_group::create(
-            [
-                'group_name' => request('group_name'),
-                'project_id' => request('project_id')
-            ]
-        ))->id;
 
+        try {
+            $group_id = (Device_group::create(
+                [
+                    'group_name' => request('group_name'),
+                    'project_id' => request('project_id')
+                ]
+            ))->id;
+        } catch (QueryException $e) {
+            return Redirect::back()->withErrors(['Group name: "' . request('group_name') . '" exists in the project with the ID: ' . request('project_id')]);
+        }
         return redirect('/device_groups/' . $group_id);
     }
 
@@ -154,8 +180,22 @@ class DeviceGroupController extends Controller
                 "group_name" => "required|string|max:255|min:5",
             ]
         );
-        $group->update($request->only('group_name'));
-        return redirect('/device_groups/' . $id);
+
+        try {
+            Device_group::where(
+                [
+                    ['group_name', '=', request('group_name')],
+                    ['project_id', '=', $group->project_id]
+                ]
+            )->firstOrFail();
+        } catch (ModelNotFoundException $e) {
+            //Group name doen't exist in the project
+            $group->update($request->only('group_name'));
+            return redirect('/device_groups/' . $id);
+        }
+
+        //Group name exists in the project
+        return Redirect::back()->withErrors(['Group name: "' . request('group_name') . '" exists in the project with the ID: ' . request('project_id')]);
     }
 
     /**

@@ -15,9 +15,22 @@ use Illuminate\Support\Facades\Validator;
 use App\Topic;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Support\Facades\Route;
 
 class ProjectController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('userHasProject:' . Route::input('project'), ['except' => [
+            'index',
+            'create',
+            'store'
+        ]]);
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -55,42 +68,41 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        if (Auth::check()) {
-            $this->validate($request, [
-                'project_name' => 'required|string|max:255|min:5',
-                'password' => 'required|string|min:6'
+        $this->validate($request, [
+            'project_name' => 'required|string|max:255|min:5',
+            'password' => 'required|string|min:6'
             //we have to add the user authenticated as owner
-            ]);
+        ]);
 
-            $project_id = Project::create(
-                [
-                    'project_name' => request('project_name'),
-                    'password' => Hash::make(request('password'))
-                ]
-            )->id;
-            Project_user::create(
-                [
-                    'user_id' => Auth::id(),
-                    'project_id' => $project_id
-                ]
-            );
-            return redirect('/projects/' . $project_id);
-        } else
-            return redirect('/');
+        $project_id = Project::create(
+            [
+                'project_name' => request('project_name'),
+                'password' => Hash::make(request('password'))
+            ]
+        )->id;
+
+        Project_user::create(
+            [
+                'user_id' => Auth::id(),
+                'project_id' => $project_id
+            ]
+        );
+
+        return redirect('/projects/' . $project_id);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int  $project_id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($project_id)
     {
-        $project = Project::findOrFail($id);
+        $project = Project::findOrFail($project_id);
 
         $groups = DB::table('projects')
-            ->where('projects.id', $id)
+            ->where('projects.id', $project_id)
             ->join('device_groups', 'device_groups.project_id', '=', 'projects.id')
             ->get();
 
@@ -100,12 +112,12 @@ class ProjectController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int  $project_id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($project_id)
     {
-        $project = Project::findOrFail($id);
+        $project = Project::findOrFail($project_id);
         return view('edit_project', compact('project'));
     }
 
@@ -113,17 +125,17 @@ class ProjectController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  int  $project_id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $project_id)
     {
         $this->validate($request, [
             'project_name' => 'string|max:255|min:5',
             'password' => 'string|min:6'
         ]);
 
-        $project = Project::findOrFail($id);
+        $project = Project::findOrFail($project_id);
         $req = $request->only(['project_name', 'password']);
         if (array_key_exists('password', $req))
             $req['password'] = Hash::make($req['password']);
@@ -131,18 +143,18 @@ class ProjectController extends Controller
         return Project::all();
     }
 
-    public function changeProjectName($id, Request $request)
+    public function changeProjectName($project_id, Request $request)
     {
         $this->validate($request, [
             'project_name' => 'required'
         ]);
-        return $this->update($request, $id);
+        return $this->update($request, $project_id);
     }
 
-    public function changePassword($id, Request $request)
+    public function changePassword($project_id, Request $request)
     {
         try {
-            $project = Project::findOrFail($id);
+            $project = Project::findOrFail($project_id);
         } catch (ModelNotFoundException $e) {
             return Redirect::back()->withErrors(['project_id doesn\'t exist']);
         }
@@ -151,7 +163,7 @@ class ProjectController extends Controller
             'password' => 'required'
         ]);
         if (Hash::check(request('old_password'), $project->password)) {
-            return $this->update($request, $id);
+            return $this->update($request, $project_id);
         } else {
             return Redirect::back()->withErrors(['Incorrect password']);
         }
@@ -161,12 +173,12 @@ class ProjectController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int  $project_id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($project_id)
     {
-        Project::findOrFail($id)->delete();
+        Project::findOrFail($project_id)->delete();
         return Project::all();
     }
 
