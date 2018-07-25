@@ -23,7 +23,10 @@ class UserHasGroup
         try{
             $group = Device_group::findOrFail($group_id);
         }catch(ModelNotFoundException $e){
-            return redirect('/projects')->withErrors(['Group doesn\'t exist']);
+            if ($request->wantsJson())
+                return response(['errors'=>["otherError"=>['Group doesn\'t exist'] ]] ,403);
+            return redirect('/projects')->withErrors([$group_id]);
+//                ['Group doesn\'t exist']);
         }
         $project_id = $group->project_id;
         try {
@@ -32,6 +35,10 @@ class UserHasGroup
                 ['project_id', '=', $project_id]
             ])->firstOrFail();
         } catch (ModelNotFoundException $e) {
+            if ($request->wantsJson())
+                return response(
+                    ['errors'=>["otherError"=>['You don\'t have permission on the group demanded']]],
+                    403);
             return redirect('/projects')->withErrors(['You don\'t have permission on the group demanded']);
         }
         return $next($request);

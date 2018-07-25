@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Device_groups_topic;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Topic;
 use App\Device_group;
@@ -81,8 +82,9 @@ class Device_groups_topicController extends Controller
         $stringKeys = array_map('strval', $values);
 
         $topics_names = array_combine($stringKeys, $values);
-
-        return view('create_permissionprohibition', compact('request', 'group_name', 'topics_names'));
+        return compact('topics_names','group_name');
+      //  return $topics_names;
+     //  return view('create_permissionprohibition', compact('request', 'group_name', 'topics_names'));
     }
 
     /**
@@ -122,7 +124,7 @@ class Device_groups_topicController extends Controller
                 'project_id' => $project_id
             ]))->id;
         }
-
+    try{
         Device_groups_topic::create(
             [
                 'group_id' => request('group_id'),
@@ -132,7 +134,15 @@ class Device_groups_topicController extends Controller
                 'type' => request('type')
             ]
         );
-        return redirect('/device_groups/' . request('group_id'));
+    }
+    catch (QueryException $e){
+            return response(
+                ['errors'=>["topic_name"=>["choose between topics that haven't yet been selected for the opposite permission"] ]],
+                401);
+    }
+    if ($request->wantsJson())
+            return '/device_groups/'.request('group_id');
+    return redirect('/device_groups/' . request('group_id'));
     }
 
     /**

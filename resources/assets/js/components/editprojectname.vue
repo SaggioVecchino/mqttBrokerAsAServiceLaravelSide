@@ -15,6 +15,10 @@
                         <input type="submit" :disabled="form.errors.any()" class="btn btn-primary" value="submit">
                     </form>
                 </div>
+                <div class="card-footer">
+                    <div class="alert alert-danger" role="alert" v-if="form.errors.has('otherError')" v-text="form.errors.get('otherError')">
+                    </div>
+                </div>
             </div>
         </template>
     </modal>
@@ -47,7 +51,14 @@
             idInput(){
                 return "edit_project_name_input".concat(this.project_id)
             }
-        }
+        },
+        mounted(){
+            var that=this
+            $("#".concat(`${this.modalId}`)).on('hidden.bs.modal', function (e) {
+                that.form.reset();
+                that.form.project_name=that.project_name;
+            })
+        },
     }
 </script>
 
