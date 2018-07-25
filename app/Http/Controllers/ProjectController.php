@@ -87,7 +87,7 @@ class ProjectController extends Controller
                 'project_id' => $project_id
             ]
         );
-
+        return ('/projects/' . $project_id);
         return redirect('/projects/' . $project_id);
     }
 
@@ -198,6 +198,8 @@ class ProjectController extends Controller
     public function show_data($project_id, Request $request)
     {
 
+        $now = time();
+
         Validator::make(array('project_id' => $project_id), [
             'project_id' => 'required|numeric|min:1',
         ])->validate();
@@ -250,14 +252,16 @@ class ProjectController extends Controller
             ],
         ])->validate();
 
-        $body = array();
-        $body['project_id'] = $project_id;
-        $body['interval'] = 'T' . request('interval');
-        $body['freq'] = request('freq');
-        $body['agg'] = request('agg');
-
         $requestSets = array_values(request('requestSets'));
         //to be sure we have indexes 0.. 1.. 2.. 3.. (escape any tentative aiming to break the code)
+
+        $body = array();
+
+        $body['time'] = $now;
+        $body['project_id'] = $project_id;
+        $body['interval'] = 'T' . $interval;
+        $body['freq'] = request('freq');
+        $body['agg'] = request('agg');
 
         for ($l = 0; $l < count(request('requestSets')); $l++) {
             $body['requestSets'][$l]['topics'] =
@@ -318,8 +322,10 @@ class ProjectController extends Controller
 
             $link = '192.168.1.114:1233';
 
-            $response = json_decode((new Client())->request('POST', 'http://' . $link . '/data/' . $project_id, $requestContent)
+            $response['series'] = json_decode((new Client())->request('POST', 'http://' . $link . '/data/' . $project_id, $requestContent)
                 ->getBody()->getContents());
+            $response['requestSets'] = $requestSets;//On peut optimiser
+            $response['agg'] = request('agg');
 
             $type = request('type');
             $freq = request('freq');
@@ -327,6 +333,164 @@ class ProjectController extends Controller
         } catch (RequestException $re) {
             return Redirect::back()->withErrors(['Error while handling the request, please try again!']);
         }
+
+
+            // test
+        /* $response = [[
+            ['x' => 'Jul 24 2018 13:16:17 GMT+0100', 'y' => 15],
+            ['x' => 'Jul 25 2018 15:29:38 GMT+0100', 'y' => 10],
+            ['x' => 'Jul 26 2018 13:18:45 GMT+0100', 'y' => 12],
+            ['x' => 'Jul 27 2018 19:16:52 GMT+0100', 'y' => 7],
+            ['x' => 'Jul 28 2018 10:16:26 GMT+0100', 'y' => 16],
+            ['x' => 'Jul 29 2018 23:18:12 GMT+0100', 'y' => 23],
+            ['x' => 'Jul 15 2018 23:18:12 GMT+0100', 'y' => 23],
+            ['x' => 'Jul 20 2018 10:16:26 GMT+0100', 'y' => 16],
+        ]];
+        $type = request('type');
+        $freq = request('freq');
+        return view('show_data', compact('response', 'project_id', 'type', 'interval', 'freq')); */
+            // testfin
+
+
+    }
+
+    public function update_data($project_id, Request $request)
+    {
+        Validator::make(array('project_id' => $project_id), [
+            'project_id' => 'required|numeric|min:1',
+        ])->validate();
+
+        $enum = ['Y', 'M', 'W', 'D', 'H', 'Mn'];
+        $this->validate($request, [
+            'requestSets.*.devices' => 'array',
+            'requestSets.*.groups' => 'array',
+            'requestSets.*.groups.*' => 'required|string|max:255|min:5',
+            'requestSets.*.devices.*' => 'required|array',
+            'requestSets.*.devices.*.group_name' => 'required|string|max:255|min:5',
+            'requestSets.*.devices.*.device_name' => 'required|string|min:5|max:255',
+            'requestSets.*.topics' => 'required|array|min:1',
+            'requestSets.*.topics.*' => [
+                'required',
+                'string',
+                'min:1',
+                'max:255',
+                'regex:/^(([\w ]+|\+)(\/([\w ]+|\+))*(\/\#)?|#)$/'
+            ],
+            'freq' => [
+                'required',
+                Rule::in($interval_freq_enum),
+            ],
+            'agg' => [
+                'required',
+                Rule::in(['min', 'max', 'count', 'avg', 'sum']),
+            ],
+            'type' => [
+                'required',
+                Rule::in(['line', 'bar']),
+            ]
+        ]);
+
+        $interval = request('freq');//interval === freq
+        
+        //to be sure we have indexes 0.. 1.. 2.. 3.. (escape any tentative aiming to break the code)
+
+        $body = array();
+
+        $body['time'] = $now;
+        $body['project_id'] = $project_id;
+        $body['interval'] = 'T' . $interval;
+        $body['freq'] = request('freq');
+        $body['agg'] = request('agg');
+
+
+
+        for ($l = 0; $l < count(request('requestSets')); $l++) {
+            $body['requestSets'][$l]['topics'] =
+                Topic::topicsToRegEx(array_unique($requestSets[$l]['topics']));
+            try {
+                if (isset($requestSets[$l]['devices'])) {
+                    $devices = array_values($requestSets[$l]['devices']);
+                    //to be sure we have indexes 0.. 1.. 2.. 3.. (escape any tentative aiming to break the code)
+
+                    $groups = array();
+                    $potentielDoublon = array();
+                    $count1 = count($devices);
+                    $count2 = $count1;
+                    for ($i = 0; $i < $count1; $i++) {
+                        if (!array_key_exists('device_name', $devices[$i])) {
+                            if (!in_array($devices[$i]['group_name'], $groups)) {
+                                $groups[] = $devices[$i]['group_name'];
+                            }
+                        } else {
+                            if (!array_key_exists($devices[$i]['group_name'], $potentielDoublon)) {
+                                $potentielDoublon[$devices[$i]['group_name']] = array($devices[$i]['device_name']);
+                            } elseif (in_array($devices[$i]['device_name'], $potentielDoublon[$devices[$i]['group_name']])) {
+                                unset($devices[$i]);
+                                $count2--;
+                            }
+                        }
+                    }
+
+                    $devices = array_values($devices);//we didn't use array_splice()
+
+                    for ($i = 0; $i < $count2; $i++) {
+                        if (!array_key_exists('device_name', $devices[$i])
+                            || in_array($devices[$i]['group_name'], $groups)) {
+                            unset($devices[$i]);
+                        }
+                    }
+
+                    if (count($groups))
+                        $body['requestSets'][$l]['groups'] = $groups;
+
+                    if (count($devices))
+                        $body['requestSets'][$l]['devices'] = array_values($devices);//we didn't use array_splice()
+                }
+            } catch (\Exception $e) {
+                abort(400);
+                    // return Redirect::back()->withErrors(['Device specified without his group name !']);
+            }
+        }
+
+
+        try {
+            $requestContent = [
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json; charset=UTF-8'
+                ],
+                'json' => $body
+            ];
+
+            $link = '192.168.1.114:1233';
+
+            $response = json_decode((new Client())->request('POST', 'http://' . $link . '/data/' . $project_id, $requestContent)
+                ->getBody()->getContents());
+            return response()->json($response);
+                // return view('show_data', compact('response', 'project_id', 'type', 'interval', 'freq'));
+        } catch (RequestException $re) {
+            abort(500);
+                // return Redirect::back()->withErrors(['Error while handling the request, please try again!']);
+        }
+
+
+        // test
+        /* $response = [[
+            ['x' => 'Jul 24 2018 13:16:17 GMT+0100', 'y' => 15],
+            ['x' => 'Jul 25 2018 15:29:38 GMT+0100', 'y' => 10],
+            ['x' => 'Jul 26 2018 13:18:45 GMT+0100', 'y' => 12],
+            ['x' => 'Jul 27 2018 19:16:52 GMT+0100', 'y' => 7],
+            ['x' => 'Jul 28 2018 10:16:26 GMT+0100', 'y' => 16],
+            ['x' => 'Jul 29 2018 23:18:12 GMT+0100', 'y' => 23],
+            ['x' => 'Jul 15 2018 23:18:12 GMT+0100', 'y' => 23],
+            ['x' => 'Jul 20 2018 10:16:26 GMT+0100', 'y' => 16],
+        ]];
+        $type = request('type');
+        $freq = request('freq');
+
+        return view('show_data', compact('response', 'project_id', 'type', 'interval', 'freq')); */
+        // testfin
+
 
     }
 

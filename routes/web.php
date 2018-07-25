@@ -68,6 +68,7 @@ Route::prefix('/projects/{project}')->group(function () {
 
     Route::get('specify_data', 'ProjectController@specify_data');
     Route::post('show_data', 'ProjectController@show_data');
+    Route::post('update_data', 'ProjectController@update_data');
 
     Route::resource('contributors', 'ContributorController')->only(['index', 'destroy']);
 });
