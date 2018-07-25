@@ -15,6 +15,10 @@
                             <input type="submit" :disabled="form.errors.any()" class="btn btn-primary" value="submit">
                         </form>
                     </div>
+                    <div class="card-footer">
+                        <div class="alert alert-danger" role="alert" v-if="form.errors.has('otherError')" v-text="form.errors.get('otherError')">
+                        </div>
+                    </div>
                 </div>
             </template>
         </modalcontainer>
@@ -35,13 +39,18 @@
                 project_id:this.project_id
             })
         }},
-        // props:{project_id:Number},
-
         methods: {
             onSubmit() {
                 this.form.post('http://localhost:8000/device_groups')
                     .then(response => window.location.href = `http://localhost:8000${response}`);
             }
+        },
+        mounted(){
+            var that=this
+            $("#".concat(`${this.project_id}`)).on('hidden.bs.modal', function (e) {
+                that.form.reset();
+                that.form.project_id=that.project_id;
+            })
         }
     }
 </script>

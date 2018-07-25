@@ -11,6 +11,8 @@ window.Vue = require('vue');
 
 import newgroupform from './components/newgroupform'
 
+import permission from './components/permission'
+
 import editprojectpassword from './components/editprojectpassword'
 
 import editprojectname from './components/editprojectname'
@@ -34,7 +36,8 @@ const app = new Vue({
        newgroupform,
         editgroup,
         editprojectname,
-        editprojectpassword
+        editprojectpassword,
+        permission
         // modal,modalcontainer
     }
     // ,

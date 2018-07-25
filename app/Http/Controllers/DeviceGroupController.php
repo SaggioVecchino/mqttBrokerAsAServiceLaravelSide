@@ -75,7 +75,6 @@ class DeviceGroupController extends Controller
                 "group_name" => "required|string|min:5|max:255",
             ]
         );
-
         try {
             $group_id = (Device_group::create(
                 [
@@ -84,8 +83,16 @@ class DeviceGroupController extends Controller
                 ]
             ))->id;
         } catch (QueryException $e) {
+            if ($request->wantsJson())
+                return response(['errors'=>["group_name"=>
+                    ['Group name: "' . request('group_name')
+                        . '" exists in the project with the ID: '
+                        . request('project_id')]]] ,
+                    403);
             return Redirect::back()->withErrors(['Group name: "' . request('group_name') . '" exists in the project with the ID: ' . request('project_id')]);
         }
+        if ($request->wantsJson())
+            return '/device_groups/' . $group_id;
         return redirect('/device_groups/' . $group_id);
     }
 
@@ -191,11 +198,19 @@ class DeviceGroupController extends Controller
         } catch (ModelNotFoundException $e) {
             //Group name doen't exist in the project
             $group->update($request->only('group_name'));
+            if ($request->wantsJson())
+                return '/device_groups/' . $id;
             return redirect('/device_groups/' . $id);
         }
 
         //Group name exists in the project
-        return Redirect::back()->withErrors(['Group name: "' . request('group_name') . '" exists in the project with the ID: ' . request('project_id')]);
+        if ($request->wantsJson())
+            return response(['errors'=>["group_name"=>
+        ['Group name: "' . request('group_name')
+            . '" exists in the project with the ID: '
+            . $group->project_id]]] ,
+        403);
+        return Redirect::back()->withErrors(['Group name: "' . request('group_name') . '" exists in the project with the ID: ' .$group->project_id]);
     }
 
     /**

@@ -25,68 +25,91 @@
             </div>
             <br>
             <div class="card">
-                <div class="card-header"><b>Permissions on publications:</b>
-                <br>
-                <a href="/device_groups_topics/create?type=publication&amp;allow=1&amp;group_id={{$group->id}}">+add</a></div>
                 <div class="card-body">
-                @if(count($permissionsPublications))
-                    <ul>
-                    @foreach($permissionsPublications as $element)
-                        <li>{{$element->topic_name}}</li>
-                    @endforeach
-                    </ul>
-                @else
-                    No permission on publications attached to this group
-                @endif
+
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <b>Permissions on publications:</b>
+                        <br>
+                        <permission group_id="{{$group->id}}" type="publication" allow="1" modalid="publication1">
+                        </permission>
+                        <div class="card-body">
+                            @if(count($permissionsPublications))
+                                <ul>
+                                    @foreach($permissionsPublications as $element)
+                                        <li>{{$element->topic_name}}</li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                No permission on publications attached to this group
+                            @endif
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <b>Prohibitions on publications:</b>
+                        <br>
+                        <permission group_id="{{$group->id}}" type="publication" allow="0" modalid="publication0">
+                        </permission>
+                        <div class="card-body">
+                            @if(count($prohibitionsPublications))
+                                <ul>
+                                    @foreach($prohibitionsPublications as $element)
+                                        <li>{{$element->topic_name}}</li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                No prohibition on publications attached to this group
+                            @endif
+                        </div>
+
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <b>Permissions on subscribtions:</b>
+                        <br>
+                        <permission group_id="{{$group->id}}" type="subscribtion" allow="1" modalid="subscribtion1">
+                        </permission>
+                        <div class="card-body">
+                            @if(count($permissionsSubscribtions))
+                                <ul>
+                                    @foreach($permissionsSubscribtions as $element)
+                                        <li>{{$element->topic_name}}</li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                No permission on subscribtions attached to this group
+                            @endif
+                        </div>
+                </div>
                 </div>
 
 
-                <div class="card-header"><b>Prohibitions on publications:</b>
-                <br>
-                <a href="/device_groups_topics/create?type=publication&amp;allow=0&amp;group_id={{$group->id}}">+add</a></div>
-                <div class="card-body">
-                @if(count($prohibitionsPublications))
-                    <ul>
-                    @foreach($prohibitionsPublications as $element)
-                        <li>{{$element->topic_name}}</li>
-                    @endforeach
-                    </ul>
-                @else
-                    No prohibition on publications attached to this group
-                @endif
-                </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <b>Prohibitions on subscribtions:</b>
+                            <br>
+                            <permission group_id="{{$group->id}}" type="subscribtion" allow="0" modalid="subscribtion0">
+                            </permission>
+                            <div class="card-body">
+                                @if(count($prohibitionsSubscribtions))
+                                    <ul>
+                                        @foreach($prohibitionsSubscribtions as $element)
+                                            <li>{{$element->topic_name}}</li>
+                                        @endforeach
+                                    </ul>
+                                @else
+                                    No prohibition on subscribtions attached to this group
+                                @endif
+                            </div>
+                    </div>
+                    </div>
 
-
-                <div class="card-header"><b>Permissions on subscribtions:</b>
-                <br>
-                <a href="/device_groups_topics/create?type=subscribtion&amp;allow=1&amp;group_id={{$group->id}}">+add</a></div>
-                <div class="card-body">
-                @if(count($permissionsSubscribtions))
-                    <ul>
-                    @foreach($permissionsSubscribtions as $element)
-                        <li>{{$element->topic_name}}</li>
-                    @endforeach
-                    </ul>
-                @else
-                    No permission on subscribtions attached to this group
-                @endif
-                </div>
-
-
-                <div class="card-header"><b>Prohibitions on subscribtions:</b>
-                <br>
-                <a href="/device_groups_topics/create?type=subscribtion&amp;allow=0&amp;group_id={{$group->id}}">+add</a></div>
-                <div class="card-body">
-                @if(count($prohibitionsSubscribtions))
-                    <ul>
-                    @foreach($prohibitionsSubscribtions as $element)
-                        <li>{{$element->topic_name}}</li>
-                    @endforeach
-                    </ul>
-                @else
-                    No prohibition on subscribtions attached to this group
-                @endif
-                </div>
             </div>
         </div>
     </div>

@@ -30,6 +30,10 @@
 
                     </form>
                 </div>
+                <div class="card-footer">
+                    <div class="alert alert-danger" role="alert" v-if="form.errors.has('otherError')" v-text="form.errors.get('otherError')">
+                    </div>
+                </div>
             </div>
         </template>
     </modal>
@@ -54,14 +58,8 @@
             }},
         methods: {
             onSubmit() {
-                var help=this.addError
                 this.form.patch(`http://localhost:8000/projects/${this.project_id}/change_password`)
                     .then(function (response ){
-                        if (response.errors)
-                        {
-                            help(response.errors)
-                        }
-                        else
                             window.location.href = 'http://localhost:8000/projects'
                     })
             },
@@ -71,6 +69,13 @@
             passInputId(i){
                 return `edit_project_password_input${i}`.concat(this.project_id)
             }
+        },
+        mounted(){
+            var form=this.form
+            $("#".concat(`${this.modalId}`)).on('hidden.bs.modal', function (e) {
+                form.reset();
+            })
+
         },
         computed:{
             modalId(){

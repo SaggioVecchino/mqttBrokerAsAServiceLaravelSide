@@ -19,7 +19,7 @@
                 <div class="card-header"  id="form-div">My Projects
                     <br><br>
                     {{--<a href="/projects/create">Create a new project</a>--}}
-                     <newprojectform></newprojectform>
+                     <newprojectform ></newprojectform>
 
                 </div>
                 <div class="card-body">
@@ -39,8 +39,8 @@
                                         edit
                                     </button>
                                     <div class="dropdown-menu" >
-                                        <button type="button" data-toggle="modal" data-target="#{{$project->project_name }}{{$project->id}}edit_name">name</button>
-                                        <button type="button" data-toggle="modal" data-target="#{{$project->project_name }}{{$project->id}}edit_password">password</button>
+                                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#{{$project->project_name }}{{$project->id}}edit_name">name</button>
+                                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#{{$project->project_name }}{{$project->id}}edit_password">password</button>
                                     </div>
                                 </div>
                         </div>

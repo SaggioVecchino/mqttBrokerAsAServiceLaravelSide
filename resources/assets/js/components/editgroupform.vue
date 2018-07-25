@@ -14,6 +14,11 @@
                             <input type="submit" :disabled="form.errors.any()" class="btn btn-primary" value="submit">
                         </form>
                     </div>
+
+                    <div class="card-footer">
+                        <div class="alert alert-danger" role="alert" v-if="form.errors.has('otherError')" v-text="form.errors.get('otherError')">
+                        </div>
+                    </div>
                 </div>
             </template>
         </modalcontainer>
@@ -45,6 +50,13 @@
             modalId(){
                 return this.group_name.concat(this.group_id)
             }
+        },
+        mounted(){
+            var that=this
+            $("#".concat(`${this.modalId}`)).on('hidden.bs.modal', function (e) {
+                that.form.reset();
+                that.form.group_name=that.group_name;
+            })
         }
     }
 </script>

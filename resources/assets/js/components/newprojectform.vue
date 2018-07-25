@@ -19,6 +19,10 @@
                         <input type="submit" :disabled="form.errors.any()" class="btn btn-primary" value="submit">
                     </form>
                 </div>
+                <div class="card-footer">
+                    <div class="alert alert-danger" role="alert" v-if="form.errors.has('otherError')" v-text="form.errors.get('otherError')">
+                    </div>
+                </div>
             </div>
         </template>
     </modalcontainer>

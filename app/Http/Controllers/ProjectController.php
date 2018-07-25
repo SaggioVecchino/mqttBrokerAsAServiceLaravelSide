@@ -87,7 +87,8 @@ class ProjectController extends Controller
                 'project_id' => $project_id
             ]
         );
-        return ('/projects/' . $project_id);
+        if ($request->wantsJson())
+            return ('/projects/' . $project_id);
         return redirect('/projects/' . $project_id);
     }
 
@@ -165,6 +166,11 @@ class ProjectController extends Controller
         if (Hash::check(request('old_password'), $project->password)) {
             return $this->update($request, $project_id);
         } else {
+            if ($request->wantsJson())
+                return response(
+                ['errors' => ["old_password" => ["Incorrect password"]]],
+                402
+            );
             return Redirect::back()->withErrors(['Incorrect password']);
         }
     }
