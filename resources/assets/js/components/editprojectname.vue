@@ -27,6 +27,7 @@
 <script>
     import modal from './modal.vue';
     import Form from "../forms/form";
+    import EventBus from '../event-bus'
     export default {
         name: "editprojectname",
         components:{'modal':modal},
@@ -39,8 +40,14 @@
             }},
         methods: {
             onSubmit() {
+                var that=this
+                that.newName=this.form.project_name
                 this.form.patch(`http://localhost:8000/projects/${this.project_id}/change_project_name`)
-                    .then(response => window.location.href = 'http://localhost:8000/projects')
+                    .then(response =>{
+                        EventBus.$emit('projectNameChanged',that.newName,that.project_id)
+                        $("#".concat(`${that.modalId}`)).modal('hide')
+                       // window.location.href = 'http://localhost:8000/projects'
+                    })
                         // `http://localhost:8000${response}`);
             }
         },

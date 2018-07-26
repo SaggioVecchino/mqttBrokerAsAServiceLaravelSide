@@ -11,7 +11,7 @@
 
                             <label :for="passInputId(1)">Old password</label>
 
-                            <input :id="passInputId(1)" v-model="form.old_password"type="password" placeholder="Old password" class="form-control" name="old_password"  >
+                            <input :id="passInputId(1)" v-model="form.old_password" type="password" placeholder="Old password" class="form-control" name="old_password"  >
 
                             <span class="help is-danger invalid-feedback" style="display: inline" v-if="form.errors.has('old_password')" v-text="form.errors.get('old_password')"></span>
 

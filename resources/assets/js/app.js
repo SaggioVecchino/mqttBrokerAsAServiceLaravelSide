@@ -20,6 +20,9 @@ import editprojectname from './components/editprojectname'
 import editgroup from './components/editgroupform'
 
 import newprojectform from './components/newprojectform'
+
+import projectlist from './components/projectlist'
+
 // import Form from "./forms/form";
 // import modal from './components/modal';
 // import modalcontainer from './components/modalcontainer';
@@ -37,7 +40,8 @@ const app = new Vue({
         editgroup,
         editprojectname,
         editprojectpassword,
-        permission
+        permission,
+        projectlist
         // modal,modalcontainer
     }
     // ,

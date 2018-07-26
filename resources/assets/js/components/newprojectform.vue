@@ -45,8 +45,17 @@
         methods: {
             onSubmit() {
                 this.form.post('http://localhost:8000/projects')
-                    .then(response => window.location.href = `http://localhost:8000${response}`);
+                    .then(response => {
+
+                        window.location.href = `http://localhost:8000${response}`
+                    });
             }
-        }
+        },
+        mounted() {
+            var that = this
+            $("#".concat(`Create-your-new-project`)).on('hidden.bs.modal', function (e) {
+                that.form.reset();
+            })
+        },
     }
 </script>
