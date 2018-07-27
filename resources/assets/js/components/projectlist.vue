@@ -6,7 +6,7 @@
 
         </div>
         <div class="card-body">
-            <project v-for="project in projectsList" :key="project.id" :project="project"></project>
+            <project @projectDeleted="deleteProject" v-for="project in projectsList" :key="project.id" :project="project"></project>
         </div>
     </div>
 
@@ -31,14 +31,21 @@
         },
         props: ['projects'],
         methods:{
-
+            deleteProject(project_id){
+                for(let i=0;i<this.projectsList.length;i++ ){
+                    if (this.projectsList[i].id==project_id)
+                    {
+                        this.projectsList.splice(i,1);
+                        break;
+                    }
+                }
+            }
         },
         mounted(){
             var that=this
             EventBus.$on('projectNameChanged',(newName,project_id)=>{
                 alert(newName)
-                var i=0
-                for(i=0;i<that.projectsList.length;i++ ){
+                for(let i=0;i<that.projectsList.length;i++ ){
                     if (that.projectsList[i].id==project_id)
                     {
                         that.projectsList[i].project_name=newName;

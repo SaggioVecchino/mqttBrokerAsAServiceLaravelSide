@@ -23,6 +23,8 @@ import newprojectform from './components/newprojectform'
 
 import projectlist from './components/projectlist'
 
+import grouplist from './components/grouplist'
+
 // import Form from "./forms/form";
 // import modal from './components/modal';
 // import modalcontainer from './components/modalcontainer';
@@ -41,7 +43,8 @@ const app = new Vue({
         editprojectname,
         editprojectpassword,
         permission,
-        projectlist
+        projectlist,
+        grouplist
         // modal,modalcontainer
     }
     // ,
