@@ -65,7 +65,7 @@ var getSeries = function (response) {
             label: 'series-'.concat(i),
             data: data,
             fill: false,
-            backgroundColor: color(dataSetColor).alpha(0.5).rgbString(),
+            // backgroundColor: color(dataSetColor).alpha(0.5).rgbString(),
             borderColor: dataSetColor
         };
     }
@@ -176,8 +176,8 @@ var removeDuplicates = function (arr) {
 var getLabels = function (series) {
     labels = [];
     series.forEach(function (serie) {
-        serie.forEach(function (element) {
-            labels.push(element);
+        serie.data.forEach(function (element) {
+            labels.push(element.x);
         })
     })
     return removeDuplicates(labels);
@@ -188,7 +188,7 @@ var traceGraphChart = function (series, type, format) {
     var config = {
         type: type,
         data: {
-            labels: getLabels(series),
+            // labels: getLabels(series),
             datasets: series
         },
         options: {
@@ -225,7 +225,7 @@ var traceGraphChart = function (series, type, format) {
 var serieContainsDate = function (serie, date) {
     var len = serie.length;
     for (var i = 0; i < len; i++) {
-        if (serie[i].x === date)
+        if (serie[i].x.getTime() == (new Date(date)).getTime())
             return i;
     }
     return false;
@@ -236,18 +236,21 @@ var updateSeries = function (oldSeries, newSeries) {
     if (len !== newSeries.length)
         return;
     for (var i = 0; i < len; i++) {
-        newSeries[i].forEach(function (e)=> {
-            var k = serieContainsDate(oldSeries[i], e);
+        newSeries[i].forEach(function (e) {
+            var k = serieContainsDate(oldSeries[i].data, e.x);
+            // console.log(new Date(e.x) === new Date(oldSeries[i].data));
+
             if (k !== false)
-                oldSeries[i][k].y = e.y;
-            else
-                oldSeries[i].push(e);
+                oldSeries[i].data[k].y = e.y;
+            else{
+                oldSeries[i].data.push({x: new Date(e.x), y: e.y});
+            }
         })
     }
 }
 
-var updateGrapChart = function (series) {
-    $.post(`http://localhost:8000/${projectId}/update_data`,
+var updateGraphChart = function (series) {
+    $.post(`http://localhost:8000/projects/${projectId}/update_data`,
         {
             type: type,
             freq: freq,
@@ -256,11 +259,11 @@ var updateGrapChart = function (series) {
             agg: agg
         },
         function (response, status) {
-            if (status !== 200) {
+            if (status !== 'success') {
                 console.log('status error: ' + status);
                 return;
             }
-            updateSeries(series, data);
+            updateSeries(series, response);
             traceGraphChart(series, type, format);
         });
 }
@@ -270,11 +273,7 @@ window.addEventListener('load', function () {
     series = getSeries(response);
     format = getFormat(interval, freq);
     traceGraphChart(series, type, format);
-    while (true) {
-        setTimeout(3000, () => {
-            updateGraphChart(series);
-        });
-    }
+    setInterval(function() {updateGraphChart(series);} , 2000);
 });
 
 </script>

@@ -16,7 +16,10 @@ class Device_groups_topicController extends Controller
 
     public function __construct(Request $request)
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => [
+            'authorizePublish',
+            'authorizeSubscribe'
+        ]]);
         $this->middleware(
             'userHasDeviceGroupTopic:' . Route::input('device_group_topic'),
             ['except' => [
@@ -82,7 +85,7 @@ class Device_groups_topicController extends Controller
         $stringKeys = array_map('strval', $values);
 
         $topics_names = array_combine($stringKeys, $values);
-        return compact('topics_names','group_name');
+        return compact('topics_names', 'group_name');
       //  return $topics_names;
      //  return view('create_permissionprohibition', compact('request', 'group_name', 'topics_names'));
     }
@@ -124,25 +127,25 @@ class Device_groups_topicController extends Controller
                 'project_id' => $project_id
             ]))->id;
         }
-    try{
-        Device_groups_topic::create(
-            [
-                'group_id' => request('group_id'),
-                'project_id' => $project_id,
-                'topic_id' => $topic_id,
-                'allow' => request('allow'),
-                'type' => request('type')
-            ]
-        );
-    }
-    catch (QueryException $e){
+        try {
+            Device_groups_topic::create(
+                [
+                    'group_id' => request('group_id'),
+                    'project_id' => $project_id,
+                    'topic_id' => $topic_id,
+                    'allow' => request('allow'),
+                    'type' => request('type')
+                ]
+            );
+        } catch (QueryException $e) {
             return response(
-                ['errors'=>["topic_name"=>["choose between topics that haven't yet been selected for the opposite permission"] ]],
-                401);
-    }
-    if ($request->wantsJson())
-            return '/device_groups/'.request('group_id');
-    return redirect('/device_groups/' . request('group_id'));
+                ['errors' => ["topic_name" => ["choose between topics that haven't yet been selected for the opposite permission"]]],
+                401
+            );
+        }
+        if ($request->wantsJson())
+            return '/device_groups/' . request('group_id');
+        return redirect('/device_groups/' . request('group_id'));
     }
 
     /**

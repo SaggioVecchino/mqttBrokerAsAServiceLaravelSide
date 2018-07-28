@@ -326,10 +326,11 @@ class ProjectController extends Controller
                 'json' => $body
             ];
 
-            $link = '192.168.1.114:1233';
+            $link = 'localhost:1233';
 
             $response['series'] = json_decode((new Client())->request('POST', 'http://' . $link . '/data/' . $project_id, $requestContent)
                 ->getBody()->getContents());
+            // dd($response);
             $response['requestSets'] = $requestSets;//On peut optimiser
             $response['agg'] = request('agg');
 
@@ -362,6 +363,8 @@ class ProjectController extends Controller
 
     public function update_data($project_id, Request $request)
     {
+        $now = time();
+
         Validator::make(array('project_id' => $project_id), [
             'project_id' => 'required|numeric|min:1',
         ])->validate();
@@ -384,7 +387,7 @@ class ProjectController extends Controller
             ],
             'freq' => [
                 'required',
-                Rule::in($interval_freq_enum),
+                Rule::in($enum),
             ],
             'agg' => [
                 'required',
@@ -399,6 +402,8 @@ class ProjectController extends Controller
         $interval = request('freq');//interval === freq
         
         //to be sure we have indexes 0.. 1.. 2.. 3.. (escape any tentative aiming to break the code)
+
+        $requestSets = array_values(request('requestSets'));
 
         $body = array();
 
@@ -468,7 +473,7 @@ class ProjectController extends Controller
                 'json' => $body
             ];
 
-            $link = '192.168.1.114:1233';
+            $link = 'localhost:1233';
 
             $response = json_decode((new Client())->request('POST', 'http://' . $link . '/data/' . $project_id, $requestContent)
                 ->getBody()->getContents());

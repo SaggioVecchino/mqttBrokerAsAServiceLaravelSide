@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Project;
 use App\Device_group;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Hash;
 
 class DeviceController extends Controller
 {
@@ -114,6 +115,7 @@ class DeviceController extends Controller
 
     function auth(Request $request)
     {
+
         $validatedData = $this->validate($request, [
             'device_name' => 'required|string|min:5|max:255',
             'project_id' => 'required|integer',
