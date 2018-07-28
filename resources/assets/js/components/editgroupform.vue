@@ -27,6 +27,7 @@
 <script>
     import modalcontainer from './modalcontainer.vue';
     import Form from "../forms/form";
+    import EventBus from '../event-bus'
 
     export default {
         name: "editgroup",
@@ -42,13 +43,20 @@
 
         methods: {
             onSubmit() {
+                var that=this
+
+                that.newName=this.form.group_name
                 this.form.patch(`http://localhost:8000/device_groups/${this.group_id}`)
-                    .then(response => window.location.href = `http://localhost:8000${response}`);
+                    .then(response =>{
+                        EventBus.$emit('groupNameChanged',that.newName,that.group_id)
+                        $("#".concat(`${that.modalId}`)).modal('hide')
+                        // window.location.href = `http://localhost:8000${response}`
+                    });
             }
         },
         computed:{
             modalId(){
-                return this.group_name.concat(this.group_id)
+                return this.group_id
             }
         },
         mounted(){

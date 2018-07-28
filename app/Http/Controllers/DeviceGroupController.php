@@ -222,6 +222,7 @@ class DeviceGroupController extends Controller
     public function destroy($id)
     {
         Device_group::findOrFail($id)->delete();
-        return Device_group::all();
+        return 'group deleted';
+//        return Device_group::all();
     }
 }

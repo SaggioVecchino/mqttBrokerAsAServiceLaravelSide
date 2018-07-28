@@ -1,5 +1,5 @@
 <template>
-    <modalcontainer :modalId="project_id" btncontent="Create a new group">
+    <modalcontainer :modalId="'new_group'+project_id" btncontent="Create a new group">
             <template slot="header">Create a new group in the project with ID: {{project_id}}
             </template>
             <template slot="body">
