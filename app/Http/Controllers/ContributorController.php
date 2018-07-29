@@ -20,10 +20,20 @@ class ContributorController extends Controller
         return DB::table("project_users")->where([
             ["project_users.project_id", '=', $project_id]
         ])->join("users", "users.id", "=", "project_users.user_id")
-            ->select("users.*")
+            ->select("users.name","users.id")
             ->get();
     }
 
+
+    public function findUserOnKeyUp(Request $request){
+        $this->validate($request,[
+            'name' => 'required|string|max:255',
+        ]);
+        return DB::table('users')
+            ->where('users.name','LIKE',request('name')."%")
+            ->select('users.id','users.name')
+            ->get();
+    }
 
     /**
      * Remove the specified resource from storage.

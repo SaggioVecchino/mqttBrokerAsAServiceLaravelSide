@@ -17,6 +17,12 @@ class CreateProjectsTable extends Migration
             $table->increments('id');
             $table->string('project_name');
             $table->string('password');
+            $table->unsignedInteger('owner')->nullable();
+            $table->foreign('owner')
+                ->references('id')
+                ->on('users')
+                ->onDelete('set null');
+
             //we have to add a foreign key to user (owner)
             $table->timestamps();
         });
