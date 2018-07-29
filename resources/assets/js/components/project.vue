@@ -4,7 +4,8 @@
         </div>
         <div class="card-body">
             <ul>
-                <li><a :href="'/projects/'+project.id+'/specify_data'">show statistics</a></li>
+                <li>
+                <specifydata :project_id="project.id" :project_name="project.project_name"></specifydata></li>
                 <li><a :href="'/projects/'+project.id">show groups</a></li>
                 <li>
                     <confirm btncontent="Delete" :modalId="'delete'+project.id"
@@ -40,39 +41,36 @@
 </template>
 
 <script>
-    import editprojectname from './editprojectname.vue';
-    import editprojectpassword from './editprojectpassword.vue';
-    import confirm from './confirm.vue';
+import editprojectname from "./editprojectname.vue";
+import editprojectpassword from "./editprojectpassword.vue";
+import confirm from "./confirm.vue";
+import specifydata from "./specifydata.vue";
 
-    export default {
-        name: "project",
-        components:
-            {
-                'editprojectname': editprojectname,
-                'editprojectpassword': editprojectpassword,
-                'confirm': confirm
-            },
-        data() {
-            return {
-                theproject: this.project
-            }
-        },
-        props: ['project'],
-        methods: {
-            deleteProject() {
-                var url = `http://localhost:8000/projects/${this.project.id}`
-                axios.delete(url)
-                    .then(
-                        response => {
-                            this.$emit('projectDeleted',this.project.id)
-                            $("#".concat("delete",this.project.id)).modal('hide')
-                        })
-            }
-        }
-
+export default {
+  name: "project",
+  components: {
+    editprojectname: editprojectname,
+    editprojectpassword: editprojectpassword,
+    confirm: confirm,
+    specifydata: specifydata
+  },
+  data() {
+    return {
+      theproject: this.project
+    };
+  },
+  props: ["project"],
+  methods: {
+    deleteProject() {
+      var url = `http://localhost:8000/projects/${this.project.id}`;
+      axios.delete(url).then(response => {
+        this.$emit("projectDeleted", this.project.id);
+        $("#".concat("delete", this.project.id)).modal("hide");
+      });
     }
+  }
+};
 </script>
 
 <style scoped>
-
 </style>

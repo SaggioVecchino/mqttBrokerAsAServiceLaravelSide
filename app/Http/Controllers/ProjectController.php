@@ -101,15 +101,15 @@ class ProjectController extends Controller
     public function show($project_id)
     {
 //        $project = Project::findOrFail($project_id);
-        $project=Project::where('id',$project_id)
-            ->select('id','project_name')
+        $project = Project::where('id', $project_id)
+            ->select('id', 'project_name')
             ->firstOrFail();
 
 
         $groups = DB::table('projects')
             ->where('projects.id', $project_id)
             ->join('device_groups', 'device_groups.project_id', '=', 'projects.id')
-            ->select('device_groups.id','device_groups.group_name')
+            ->select('device_groups.id', 'device_groups.group_name')
             ->get();
 
         return view('project', compact('groups', 'project'));
@@ -192,12 +192,6 @@ class ProjectController extends Controller
         Project::findOrFail($project_id)->delete();
         return 'project deleted';
 //        return Project::all();
-    }
-
-    public function specify_data($project_id)
-    {
-        $project = Project::findOrFail($project_id);
-        return view('specify_data', compact('project'));
     }
 
     /**

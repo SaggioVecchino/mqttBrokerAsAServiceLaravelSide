@@ -1,4 +1,4 @@
-import Errors from './error'
+import Errors from "./error";
 export default class Form {
     /**
      * Create a new Form instance.
@@ -15,7 +15,6 @@ export default class Form {
         this.errors = new Errors();
     }
 
-
     /**
      * Fetch all relevant data for the form.
      */
@@ -29,18 +28,16 @@ export default class Form {
         return data;
     }
 
-
     /**
      * Reset the form fields.
      */
     reset() {
         for (let field in this.originalData) {
-            this[field] = '';
+            this[field] = "";
         }
 
         this.errors.clear();
     }
-
 
     /**
      * Send a POST request to the given URL.
@@ -48,9 +45,8 @@ export default class Form {
      * @param {string} url
      */
     post(url) {
-        return this.submit('post', url);
+        return this.submit("post", url);
     }
-
 
     /**
      * Send a PUT request to the given URL.
@@ -58,9 +54,8 @@ export default class Form {
      * @param {string} url
      */
     put(url) {
-        return this.submit('put', url);
+        return this.submit("put", url);
     }
-
 
     /**
      * Send a PATCH request to the given URL.
@@ -68,9 +63,8 @@ export default class Form {
      * @param {string} url
      */
     patch(url) {
-        return this.submit('patch', url);
+        return this.submit("patch", url);
     }
-
 
     /**
      * Send a DELETE request to the given URL.
@@ -78,9 +72,8 @@ export default class Form {
      * @param {string} url
      */
     delete(url) {
-        return this.submit('delete', url);
+        return this.submit("delete", url);
     }
-
 
     /**
      * Submit the form.
@@ -96,12 +89,11 @@ export default class Form {
                     resolve(response.data);
                 })
                 .catch(error => {
-                    this.onFail(error.response.data.errors);//without .errors same result
+                    this.onFail(error.response.data.errors); //without .errors same result
                     reject(error.response.data);
                 });
         });
     }
-
 
     /**
      * Handle a successful form submission.
@@ -113,7 +105,6 @@ export default class Form {
 
         this.reset();
     }
-
 
     /**
      * Handle a failed form submission.
