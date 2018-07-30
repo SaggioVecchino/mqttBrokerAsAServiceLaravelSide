@@ -293,7 +293,6 @@ class Device_groups_topicController extends Controller
         return $flag;
     }
 
-
     function authorizeSubscribe($project_id, $group_name, Request $request)
     {
         $this->validate(
