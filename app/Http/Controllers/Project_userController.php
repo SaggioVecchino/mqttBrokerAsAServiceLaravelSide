@@ -4,10 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Project;
 use App\Project_user;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
 class Project_userController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('userOwnsProject:' . request('project_id'), ['only' => [
+            'store'
+        ]]);
+        $this->middleware('userExists:' . request('user_id'), ['only' => [
+            'store'
+        ]]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -40,13 +52,22 @@ class Project_userController extends Controller
             'user_id' => 'required|Integer|min:1',
             'project_id' => 'required|Integer|min:1'
         ]);
+        try{
+            Project_user::create(
+                [
+                    'user_id' => request('user_id'),
+                    'project_id' => request('project_id')
+                ]
+            );
+        }
+        catch(QueryException $e){
+            if ($request->wantsJson())
+                return response(
+                    ['errors'=>["name"=>["The user you're trying to add is already a contributor"] ]],
+                    403);
+            returnRedirect::back()->withErrors(["The user you're trying to add is already a contributor"]);
+        }
 
-        Project_user::create(
-            [
-                'user_id' => request('user_id'),
-                'project_id' => request('project_id')
-            ]
-        );
         return Project_user::all();
     }
 

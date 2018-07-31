@@ -7,12 +7,18 @@
                 <li>
                 <specifydata :project_id="project.id" :project_name="project.project_name"></specifydata></li>
                 <li><a :href="'/projects/'+project.id">show groups</a></li>
-                <li>
-                    <confirm btncontent="Delete" :modalId="'delete'+project.id"
+                <li  v-if="userid === theproject.owner">
+                    <confirm v-if="userid === theproject.owner" btncontent="Delete" :modalId="'delete'+project.id"
                              :title="'Are you sure to delete the project: '+project.project_name+' with id :'+project.id"
                              confirmButtonText="YES" denyButtonText="No" type="danger" @confirm="deleteProject"></confirm>
                 </li>
-                <li>
+                <li  v-if="userid === theproject.owner">
+                    <contributors :projectname="project.project_name" :projectid="project.id"
+                                  :userid="userid" :modalid="'contributors'+project.id">
+
+                    </contributors>
+                </li>
+                <li  v-if="userid === theproject.owner">
                     <div class="btn-group dropright">
                         <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">
@@ -45,6 +51,7 @@ import editprojectname from "./editprojectname.vue";
 import editprojectpassword from "./editprojectpassword.vue";
 import confirm from "./confirm.vue";
 import specifydata from "./specifydata.vue";
+import contributors from "./contributors";
 
 export default {
   name: "project",
@@ -52,6 +59,7 @@ export default {
     editprojectname: editprojectname,
     editprojectpassword: editprojectpassword,
     confirm: confirm,
+    contributors: contributors,
     specifydata: specifydata
   },
   data() {

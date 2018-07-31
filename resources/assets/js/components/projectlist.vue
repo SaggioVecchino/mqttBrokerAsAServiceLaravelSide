@@ -6,7 +6,7 @@
 
         </div>
         <div class="card-body">
-            <project @projectDeleted="deleteProject" v-for="project in projectsList" :key="project.id" :project="project"></project>
+            <project @projectDeleted="deleteProject" v-for="project in projectsList" :key="project.id" :userid="userid" :project="project"></project>
         </div>
     </div>
 
@@ -29,7 +29,7 @@
                 projectsList: this.projects
             }
         },
-        props: ['projects'],
+        props: ['projects','userid'],
         methods:{
             deleteProject(project_id){
                 for(let i=0;i<this.projectsList.length;i++ ){

@@ -72,6 +72,8 @@ Route::prefix('/projects/{project}')->group(function () {
     Route::resource('contributors', 'ContributorController')->only(['index', 'destroy']);
 });
 
+Route::post('/count','ContributorController@findUserOnKeyUp');
+
 
 Route::prefix('/users/{user_id}')->group(function () {
     Route::resource('contributions', 'ContributionController')->only(['index', 'destroy']);

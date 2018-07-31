@@ -45,9 +45,10 @@ class ProjectController extends Controller
             ->join('project_users', 'project_users.user_id', '=', 'users.id')
             ->select('project_users.project_id')
             ->join('projects', 'projects.id', '=', 'project_users.project_id')
-            ->select('projects.id', 'projects.project_name')
+            ->select('projects.id', 'projects.project_name', 'projects.owner')
             ->get();
-        return view('home', compact('projects'));
+        $user_id=Auth::id();
+        return view('home', compact('projects','user_id'));
     }
 
     /**
@@ -77,7 +78,8 @@ class ProjectController extends Controller
         $project_id = Project::create(
             [
                 'project_name' => request('project_name'),
-                'password' => Hash::make(request('password'))
+                'password' => Hash::make(request('password')),
+                'owner' => Auth::id()
             ]
         )->id;
 

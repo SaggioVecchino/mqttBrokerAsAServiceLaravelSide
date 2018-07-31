@@ -28,84 +28,27 @@
             </div>
             <br>
             <div class="card">
-                <div class="card-header">
-                    Permissions and prohibitions
-                </div>
-                <div class="card-body">
-                    <div class="card">
-                        <div class="card-header">
-                            <b>Permissions on publications:</b>
-                            <br>
-                            <permission group_id="{{$group->id}}" type="publication" allow="1" modalid="publication1">
-                            </permission>
-                        </div>
-                        <div class="card-body">
-                            @if(count($permissionsPublications))
-                            <ul>
-                                @foreach($permissionsPublications as $element)
-                                <li>{{$element->topic_name}}</li>
-                                @endforeach
-                            </ul>
-                            @else No permission on publications attached to this group @endif
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="card">
-                        <div class="card-header">
-                            <b>Prohibitions on publications:</b>
-                            <br>
-                            <permission group_id="{{$group->id}}" type="publication" allow="0" modalid="publication0">
-                            </permission>
-                        </div>
-                        <div class="card-body">
-                            @if(count($prohibitionsPublications))
-                            <ul>
-                                @foreach($prohibitionsPublications as $element)
-                                <li>{{$element->topic_name}}</li>
-                                @endforeach
-                            </ul>
-                            @else No prohibition on publications attached to this group @endif
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="card">
-                        <div class="card-header">
-                            <b>Permissions on subscribtions:</b>
-                            <br>
-                            <permission group_id="{{$group->id}}" type="subscribtion" allow="1" modalid="subscribtion1">
-                            </permission>
-                        </div>
-                        <div class="card-body">
-                            @if(count($permissionsSubscribtions))
-                            <ul>
-                                @foreach($permissionsSubscribtions as $element)
-                                <li>{{$element->topic_name}}</li>
-                                @endforeach
-                            </ul>
-                            @else No permission on subscribtions attached to this group @endif
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="card">
-                        <div class="card-header">
-                            <b>Prohibitions on subscribtions:</b>
-                            <br>
-                            <permission group_id="{{$group->id}}" type="subscribtion" allow="0" modalid="subscribtion0">
-                            </permission>
-                        </div>
-                        <div class="card-body">
-                            @if(count($prohibitionsSubscribtions))
-                            <ul>
-                                @foreach($prohibitionsSubscribtions as $element)
-                                <li>{{$element->topic_name}}</li>
-                                @endforeach
-                            </ul>
-                            @else No prohibition on subscribtions attached to this group @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+                <permission title="Permissions on publications:" type="publication" allow="1"
+                            project_id="{{$group->project_id}}" group_id="{{$group->id}}"
+                            :permissions="{{$permissionsPublications->toJson()}}"  modalid="publication1"></permission>
+
+                <permission title="Prohibitions on publications:" type="publication" allow="0"
+                            project_id="{{$group->project_id}}"  group_id="{{$group->id}}"
+                            :permissions="{{$prohibitionsPublications->toJson()}}"  modalid="publication0"></permission>
+
+                <permission title="Permissions on subscribtions:" type="subscribtion" allow="1"
+                            project_id="{{$group->project_id}}"  group_id="{{$group->id}}"
+                            :permissions="{{$permissionsSubscribtions->toJson()}}"  modalid="subscribtion1"></permission>
+
+                <permission title="Prohibitions on subscribtions:" type="subscribtion" allow="0"
+                            project_id="{{$group->project_id}}"  group_id="{{$group->id}}"
+                            :permissions="{{$prohibitionsSubscribtions->toJson()}}"  modalid="subscribtion0"></permission>
+
         </div>
     </div>
+    </div>
+
 </div>
+
 @endsection

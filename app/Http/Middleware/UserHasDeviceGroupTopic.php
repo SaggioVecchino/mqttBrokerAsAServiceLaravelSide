@@ -4,7 +4,10 @@ namespace App\Http\Middleware;
 
 use App\Http\Controllers\Device_groups_topicController;
 use App\Device_groups_topic;
+use App\Project_user;
 use Closure;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Auth;
 
 class UserHasDeviceGroupTopic
 {
@@ -22,7 +25,7 @@ class UserHasDeviceGroupTopic
         } catch (ModelNotFoundException $e) {
             if ($request->wantsJson())
                 return response(['errors'=>["otherError"=>
-                    ['No such link between a group and the topic']]] ,
+                    ['No such link between a group and the topic:::'.$device_group_topic_id]]] ,
                     403);
             return redirect('/projects')->withErrors(['No such link between a group and the topic']);
         }
