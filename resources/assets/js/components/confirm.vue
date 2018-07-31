@@ -1,7 +1,7 @@
 <template>
     <div>
         <!--v-if="isVisible"-->
-        <modal  :modalId="idModal" v-show="isVisible">
+        <modal  :modalId="idModal" class="fade" v-show="isVisible">
             <template slot="header" >
                 {{title}}
             </template>

@@ -114,7 +114,7 @@
                if (confirm(`are you sure to delete the contributer: ${e.name}`))
                {
 
-                   let url=`http://localhost:8000/projects/${this.projectid}/contributors/${e.id+54}`
+                   let url=`http://localhost:8000/projects/${this.projectid}/contributors/${e.id}`
                    axios.delete(url)
                        .then(
                            response => {

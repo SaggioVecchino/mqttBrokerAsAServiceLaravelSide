@@ -48878,7 +48878,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -48891,6 +48891,8 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__addpermission__ = __webpack_require__(66);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__addpermission___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__addpermission__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__confirm__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__confirm___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__confirm__);
 //
 //
 //
@@ -48910,12 +48912,43 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     name: "permission",
-    props: ['title', 'permissionspublications', 'type', 'allow', 'group_id', 'modalid'],
-    components: { 'addpermission': __WEBPACK_IMPORTED_MODULE_0__addpermission___default.a }
+    props: ['project_id', 'title', 'permissions', 'type', 'allow', 'group_id', 'modalid'],
+    components: { 'addpermission': __WEBPACK_IMPORTED_MODULE_0__addpermission___default.a, 'confirm': __WEBPACK_IMPORTED_MODULE_1__confirm___default.a },
+    data: function data() {
+        return {
+            thepermission: this.permissions
+        };
+    },
+
+    methods: {
+        deletePermision: function deletePermision(e) {
+            var _this = this;
+
+            var url = 'http://localhost:8000/device_groups_topics/' + e.id;
+            alert(url);
+            axios.delete(url).then(function (response) {
+                $("#".concat("delete", e.id, _this.type, _this.allow)).modal('hide');
+                for (var i = 0; i < _this.thepermission.length; i++) {
+                    if (_this.thepermission[i].id == e.id) {
+                        _this.thepermission.splice(i, 1);
+                        break;
+                    }
+                }
+            }).catch(function (error) {
+                //this.form.onFail(error.response.data.errors);//without .errors same result
+            });
+        }
+    }
 });
 
 /***/ }),
@@ -49115,7 +49148,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         selectTopicFormOnSubmit: function selectTopicFormOnSubmit() {
             this.selectTopicForm.post("http://localhost:8000/device_groups_topics").then(function (response) {
-                // window.location.href = 'http://localhost:8000/projects'
+                window.location.href = response;
             });
         }
     },
@@ -49423,16 +49456,47 @@ var render = function() {
     ),
     _vm._v(" "),
     _c("div", { staticClass: "card-body" }, [
-      _vm.permissionspublications.length > 0
+      _vm.permissions.length > 0
         ? _c(
             "ul",
-            _vm._l(_vm.permissionspublications, function(element) {
-              return _c("li", [_vm._v(_vm._s(element.topic_name))])
+            _vm._l(_vm.thepermission, function(element) {
+              return _c(
+                "li",
+                [
+                  _vm._v(
+                    "\n                " +
+                      _vm._s(element.topic_name) +
+                      "\n                "
+                  ),
+                  _c("confirm", {
+                    attrs: {
+                      btncontent: "Delete",
+                      modalId: "delete" + element.id + _vm.type + _vm.allow,
+                      title:
+                        "Are you sure to delete the" +
+                        _vm.title +
+                        " on the topic: " +
+                        element.topic_name,
+                      confirmButtonText: "YES",
+                      denyButtonText: "No",
+                      type: "danger"
+                    },
+                    on: {
+                      confirm: function($event) {
+                        _vm.deletePermision(element)
+                      }
+                    }
+                  })
+                ],
+                1
+              )
             })
           )
         : _c("p", [
             _vm._v(
-              "\n            No permission on publications attached to this group\n        "
+              "\n            No " +
+                _vm._s(_vm.title) +
+                " attached to this group\n        "
             )
           ])
     ])
@@ -50881,6 +50945,7 @@ var render = function() {
               expression: "isVisible"
             }
           ],
+          staticClass: "fade",
           attrs: { modalId: _vm.idModal }
         },
         [
@@ -51142,7 +51207,7 @@ var timeout;
 
             if (confirm("are you sure to delete the contributer: " + e.name)) {
 
-                var url = "http://localhost:8000/projects/" + this.projectid + "/contributors/" + (e.id + 54);
+                var url = "http://localhost:8000/projects/" + this.projectid + "/contributors/" + e.id;
                 axios.delete(url).then(function (response) {
                     for (var i = 0; i < _this2.contributors.length; i++) {
                         if (_this2.contributors[i].id == e.id) {

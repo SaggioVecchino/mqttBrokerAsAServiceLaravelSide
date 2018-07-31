@@ -26,7 +26,7 @@ class UserExists
                 return response([
                     'errors' => [
                         "otherError" => [
-                            "the user you're trying to deal with doesn't exist"
+                            "the user you're trying to deal with doesn't exist ::: ***..***"
                         ]
                     ]
                 ], 403);

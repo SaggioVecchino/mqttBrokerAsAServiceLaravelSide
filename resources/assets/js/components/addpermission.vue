@@ -140,7 +140,7 @@
             selectTopicFormOnSubmit() {
                 this.selectTopicForm.post(`http://localhost:8000/device_groups_topics`)
                     .then(function (response) {
-                        // window.location.href = 'http://localhost:8000/projects'
+                        window.location.href = response;
                     })
             },
         },

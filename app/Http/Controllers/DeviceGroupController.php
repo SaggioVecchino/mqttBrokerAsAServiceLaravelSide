@@ -115,7 +115,7 @@ class DeviceGroupController extends Controller
                 ['device_groups_topics.type', '=', 'publication']
             ])
             ->join('topics', 'topics.id', '=', 'device_groups_topics.topic_id')
-            ->select('topics.topic_name')
+            ->select('topics.topic_name',"device_groups_topics.id")
             ->get();
         $prohibitionsPublications = DB::table('device_groups_topics')
             ->where([
@@ -124,7 +124,7 @@ class DeviceGroupController extends Controller
                 ['device_groups_topics.type', '=', 'publication']
             ])
             ->join('topics', 'topics.id', '=', 'device_groups_topics.topic_id')
-            ->select('topics.topic_name')
+            ->select('topics.topic_name',"device_groups_topics.id")
             ->get();
         $permissionsSubscribtions = DB::table('device_groups_topics')
             ->where([
@@ -133,7 +133,7 @@ class DeviceGroupController extends Controller
                 ['device_groups_topics.type', '=', 'subscribtion']
             ])
             ->join('topics', 'topics.id', '=', 'device_groups_topics.topic_id')
-            ->select('topics.topic_name')
+            ->select('topics.topic_name',"device_groups_topics.id")
             ->get();
         $prohibitionsSubscribtions = DB::table('device_groups_topics')
             ->where([
@@ -142,7 +142,7 @@ class DeviceGroupController extends Controller
                 ['device_groups_topics.type', '=', 'subscribtion']
             ])
             ->join('topics', 'topics.id', '=', 'device_groups_topics.topic_id')
-            ->select('topics.topic_name')
+            ->select('topics.topic_name',"device_groups_topics.id")
             ->get();
 
 
@@ -221,6 +221,7 @@ class DeviceGroupController extends Controller
      */
     public function destroy($id)
     {
+
         Device_group::findOrFail($id)->delete();
         return 'group deleted';
 //        return Device_group::all();

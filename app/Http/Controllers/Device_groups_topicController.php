@@ -16,9 +16,10 @@ class Device_groups_topicController extends Controller
 
     public function __construct(Request $request)
     {
+
         $this->middleware('auth');
         $this->middleware(
-            'userHasDeviceGroupTopic:' . Route::input('device_group_topic'),
+            'userHasDeviceGroupTopic:' . Route::input('device_groups_topic'),
             ['except' => [
                 'index',
                 'create',
@@ -27,10 +28,6 @@ class Device_groups_topicController extends Controller
                 'authorizeSubscribe'
             ]]
         );
-        $this->middleware('userHasGroup:' . request('group_id'), ['only' => [
-            'store',
-            'create'
-        ]]);
     }
 
 
