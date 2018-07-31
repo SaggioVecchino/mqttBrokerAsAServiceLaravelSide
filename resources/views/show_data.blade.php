@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <div class="container">
-    <a href="/projects/$project_id/specify_data" class="btn">Go back!</a>
+    <a href="/projects" class="btn">Go back!</a>
     <div class="row justify-content-center">
         <div class="col-md-8">
             <!-- @if ($errors->any())

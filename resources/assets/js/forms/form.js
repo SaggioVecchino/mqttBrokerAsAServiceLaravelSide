@@ -24,7 +24,6 @@ export default class Form {
         for (let property in this.originalData) {
             data[property] = this[property];
         }
-
         return data;
     }
 

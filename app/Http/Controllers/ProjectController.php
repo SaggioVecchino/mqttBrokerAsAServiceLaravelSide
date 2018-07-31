@@ -203,7 +203,6 @@ class ProjectController extends Controller
      */
     public function show_data($project_id, Request $request)
     {
-
         $now = time();
 
         Validator::make(array('project_id' => $project_id), [
@@ -312,9 +311,19 @@ class ProjectController extends Controller
                         $body['requestSets'][$l]['devices'] = array_values($devices);//we didn't use array_splice()
                 }
             } catch (\Exception $e) {
+                if ($request->wantsJson())
+                    return response(
+                    ['errors' => ["otherError" =>
+                        ['Device specified without his group name !']]],
+                    404
+                );
                 return Redirect::back()->withErrors(['Device specified without his group name !']);
             }
         }
+
+        if ($request->wantsJson())
+            return response(200);
+
 
         try {
 
@@ -338,6 +347,12 @@ class ProjectController extends Controller
             $freq = request('freq');
             return view('show_data', compact('response', 'project_id', 'type', 'interval', 'freq'));
         } catch (RequestException $re) {
+            /* if ($request->wantsJson())
+                return response(
+                ['errors' => ["otherError" =>
+                    ['Error while handling the request, please try again!']]],
+                500
+            ); */
             return Redirect::back()->withErrors(['Error while handling the request, please try again!']);
         }
 
@@ -355,7 +370,7 @@ class ProjectController extends Controller
         ]];
         $type = request('type');
         $freq = request('freq');
-        return view('show_data', compact('response', 'project_id', 'type', 'interval', 'freq')); */
+        return view('show_data', compact('response', 'project_id', 'type', 'interval', 'freq'));  */
             // testfin
 
 

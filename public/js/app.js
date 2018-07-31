@@ -484,6 +484,169 @@ module.exports = {
 
 /***/ }),
 /* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__error__ = __webpack_require__(60);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+
+
+var Form = function () {
+    /**
+     * Create a new Form instance.
+     *
+     * @param {object} data
+     */
+    function Form(data) {
+        _classCallCheck(this, Form);
+
+        this.originalData = data;
+
+        for (var field in data) {
+            this[field] = data[field];
+        }
+
+        this.errors = new __WEBPACK_IMPORTED_MODULE_0__error__["a" /* default */]();
+    }
+
+    /**
+     * Fetch all relevant data for the form.
+     */
+
+
+    _createClass(Form, [{
+        key: "data",
+        value: function data() {
+            var data = {};
+
+            for (var property in this.originalData) {
+                data[property] = this[property];
+            }
+            return data;
+        }
+
+        /**
+         * Reset the form fields.
+         */
+
+    }, {
+        key: "reset",
+        value: function reset() {
+            for (var field in this.originalData) {
+                this[field] = "";
+            }
+
+            this.errors.clear();
+        }
+
+        /**
+         * Send a POST request to the given URL.
+         * .
+         * @param {string} url
+         */
+
+    }, {
+        key: "post",
+        value: function post(url) {
+            return this.submit("post", url);
+        }
+
+        /**
+         * Send a PUT request to the given URL.
+         * .
+         * @param {string} url
+         */
+
+    }, {
+        key: "put",
+        value: function put(url) {
+            return this.submit("put", url);
+        }
+
+        /**
+         * Send a PATCH request to the given URL.
+         * .
+         * @param {string} url
+         */
+
+    }, {
+        key: "patch",
+        value: function patch(url) {
+            return this.submit("patch", url);
+        }
+
+        /**
+         * Send a DELETE request to the given URL.
+         * .
+         * @param {string} url
+         */
+
+    }, {
+        key: "delete",
+        value: function _delete(url) {
+            return this.submit("delete", url);
+        }
+
+        /**
+         * Submit the form.
+         *
+         * @param {string} requestType
+         * @param {string} url
+         */
+
+    }, {
+        key: "submit",
+        value: function submit(requestType, url) {
+            var _this = this;
+
+            return new Promise(function (resolve, reject) {
+                axios[requestType](url, _this.data()).then(function (response) {
+                    _this.onSuccess(response.data);
+                    resolve(response.data);
+                }).catch(function (error) {
+                    _this.onFail(error.response.data.errors); //without .errors same result
+                    reject(error.response.data);
+                });
+            });
+        }
+
+        /**
+         * Handle a successful form submission.
+         *
+         * @param {object} data
+         */
+
+    }, {
+        key: "onSuccess",
+        value: function onSuccess(data) {
+            //alert(data.message); // temporary
+
+            this.reset();
+        }
+
+        /**
+         * Handle a failed form submission.
+         *
+         * @param {object} errors
+         */
+
+    }, {
+        key: "onFail",
+        value: function onFail(errors) {
+            this.errors.record(errors);
+        }
+    }]);
+
+    return Form;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (Form);
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports) {
 
 /*
@@ -565,7 +728,7 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -791,170 +954,6 @@ function applyToTag (styleElement, obj) {
   }
 }
 
-
-/***/ }),
-/* 4 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__error__ = __webpack_require__(60);
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
-var Form = function () {
-    /**
-     * Create a new Form instance.
-     *
-     * @param {object} data
-     */
-    function Form(data) {
-        _classCallCheck(this, Form);
-
-        this.originalData = data;
-
-        for (var field in data) {
-            this[field] = data[field];
-        }
-
-        this.errors = new __WEBPACK_IMPORTED_MODULE_0__error__["a" /* default */]();
-    }
-
-    /**
-     * Fetch all relevant data for the form.
-     */
-
-
-    _createClass(Form, [{
-        key: "data",
-        value: function data() {
-            var data = {};
-
-            for (var property in this.originalData) {
-                data[property] = this[property];
-            }
-
-            return data;
-        }
-
-        /**
-         * Reset the form fields.
-         */
-
-    }, {
-        key: "reset",
-        value: function reset() {
-            for (var field in this.originalData) {
-                this[field] = "";
-            }
-
-            this.errors.clear();
-        }
-
-        /**
-         * Send a POST request to the given URL.
-         * .
-         * @param {string} url
-         */
-
-    }, {
-        key: "post",
-        value: function post(url) {
-            return this.submit("post", url);
-        }
-
-        /**
-         * Send a PUT request to the given URL.
-         * .
-         * @param {string} url
-         */
-
-    }, {
-        key: "put",
-        value: function put(url) {
-            return this.submit("put", url);
-        }
-
-        /**
-         * Send a PATCH request to the given URL.
-         * .
-         * @param {string} url
-         */
-
-    }, {
-        key: "patch",
-        value: function patch(url) {
-            return this.submit("patch", url);
-        }
-
-        /**
-         * Send a DELETE request to the given URL.
-         * .
-         * @param {string} url
-         */
-
-    }, {
-        key: "delete",
-        value: function _delete(url) {
-            return this.submit("delete", url);
-        }
-
-        /**
-         * Submit the form.
-         *
-         * @param {string} requestType
-         * @param {string} url
-         */
-
-    }, {
-        key: "submit",
-        value: function submit(requestType, url) {
-            var _this = this;
-
-            return new Promise(function (resolve, reject) {
-                axios[requestType](url, _this.data()).then(function (response) {
-                    _this.onSuccess(response.data);
-                    resolve(response.data);
-                }).catch(function (error) {
-                    _this.onFail(error.response.data.errors); //without .errors same result
-                    reject(error.response.data);
-                });
-            });
-        }
-
-        /**
-         * Handle a successful form submission.
-         *
-         * @param {object} data
-         */
-
-    }, {
-        key: "onSuccess",
-        value: function onSuccess(data) {
-            //alert(data.message); // temporary
-
-            this.reset();
-        }
-
-        /**
-         * Handle a failed form submission.
-         *
-         * @param {object} errors
-         */
-
-    }, {
-        key: "onFail",
-        value: function onFail(errors) {
-            this.errors.record(errors);
-        }
-    }]);
-
-    return Form;
-}();
-
-/* harmony default export */ __webpack_exports__["a"] = (Form);
 
 /***/ }),
 /* 5 */
@@ -48219,7 +48218,7 @@ var content = __webpack_require__(53);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(3)("60eb24ee", content, false, {});
+var update = __webpack_require__(4)("60eb24ee", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -48238,12 +48237,12 @@ if(false) {
 /* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)(false);
+exports = module.exports = __webpack_require__(3)(false);
 // imports
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -48289,7 +48288,8 @@ module.exports = function listToStyles (parentId, list) {
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__modalcontainer_vue__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__modalcontainer_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__modalcontainer_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__forms_form__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__forms_form__ = __webpack_require__(2);
+//
 //
 //
 //
@@ -48678,7 +48678,7 @@ var render = function() {
         _vm._v(
           "Create a new group in the project with ID: " +
             _vm._s(_vm.project_id) +
-            "\n        "
+            "\n    "
         )
       ]),
       _vm._v(" "),
@@ -48847,7 +48847,7 @@ module.exports = Component.exports
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__modal_vue__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__modal_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__modal_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__forms_form__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__forms_form__ = __webpack_require__(2);
 //
 //
 //
@@ -49278,7 +49278,7 @@ var content = __webpack_require__(66);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(3)("19dc8b1f", content, false, {});
+var update = __webpack_require__(4)("19dc8b1f", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -49297,7 +49297,7 @@ if(false) {
 /* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)(false);
+exports = module.exports = __webpack_require__(3)(false);
 // imports
 
 
@@ -49315,7 +49315,7 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__modal_vue__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__modal_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__modal_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__forms_form__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__forms_form__ = __webpack_require__(2);
 //
 //
 //
@@ -49581,7 +49581,7 @@ var content = __webpack_require__(70);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(3)("21d60a94", content, false, {});
+var update = __webpack_require__(4)("21d60a94", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -49600,7 +49600,7 @@ if(false) {
 /* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)(false);
+exports = module.exports = __webpack_require__(3)(false);
 // imports
 
 
@@ -49618,7 +49618,7 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__modal_vue__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__modal_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__modal_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__forms_form__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__forms_form__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__event_bus__ = __webpack_require__(8);
 //
 //
@@ -49820,7 +49820,7 @@ if (false) {
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__modalcontainer_vue__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__modalcontainer_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__modalcontainer_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__forms_form__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__forms_form__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__event_bus__ = __webpack_require__(8);
 //
 //
@@ -50020,7 +50020,7 @@ if (false) {
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__modalcontainer_vue__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__modalcontainer_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__modalcontainer_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__forms_form__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__forms_form__ = __webpack_require__(2);
 //
 //
 //
@@ -50329,7 +50329,7 @@ var content = __webpack_require__(79);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(3)("7c3631d6", content, false, {});
+var update = __webpack_require__(4)("7c3631d6", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -50348,7 +50348,7 @@ if(false) {
 /* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)(false);
+exports = module.exports = __webpack_require__(3)(false);
 // imports
 
 
@@ -50489,7 +50489,7 @@ var content = __webpack_require__(83);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(3)("bf9d3f82", content, false, {});
+var update = __webpack_require__(4)("bf9d3f82", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -50508,7 +50508,7 @@ if(false) {
 /* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)(false);
+exports = module.exports = __webpack_require__(3)(false);
 // imports
 
 
@@ -50800,7 +50800,7 @@ var content = __webpack_require__(89);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(3)("38516412", content, false, {});
+var update = __webpack_require__(4)("38516412", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -50819,12 +50819,12 @@ if(false) {
 /* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)(false);
+exports = module.exports = __webpack_require__(3)(false);
 // imports
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -50839,6 +50839,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__requestset_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__requestset_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__modalcontainer_vue__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__modalcontainer_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__modalcontainer_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__forms_form__ = __webpack_require__(2);
 //
 //
 //
@@ -50902,6 +50903,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+
 
 
 
@@ -50915,39 +50920,92 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   props: ["project_id", "project_name"],
   data: function data() {
     return {
-      /* form: new Form({
-                            project_id: this.project_id,
-                            requestSets: [],
-                            interval: '',
-                            freq: '',
-                            agg: '',
-                            type: ''
-                          }), */
+      form: new __WEBPACK_IMPORTED_MODULE_2__forms_form__["a" /* default */]({
+        project_id: this.project_id,
+        requestSets: [],
+        interval: "",
+        freq: "",
+        agg: "",
+        type: ""
+      }),
       nbSets: 1
     };
   },
 
   methods: {
-    /* onSubmit() {
-      this.form
-        .post("http://localhost:8000/projects/" + project_id + "/show_data")
-        .then(
-          response =>
-            (window.location.href = `http://localhost:8000${response}`)
-        );
-    }, */
+    onSubmit: function onSubmit() {
+      var that = this;
+      var myForm = this.form.data();
+      this.form.post(this.actionLink).then(function (response) {
+        var util = {};
+        util.post = function (url, fields) {
+          var $form = $("<form>", {
+            action: url,
+            method: "post"
+          });
+          $.each(fields, function (key, val) {
+            if (key !== "requestSets") $("<input>").attr({
+              type: "hidden",
+              name: key,
+              value: val
+            }).appendTo($form);
+          });
+          for (var i = 0; i < that.nbSets; i++) {
+            console.log(fields);
+            var f = fields["requestSets"];
+            $.each(f[i]["topics"], function (key, val) {
+              $("<input>").attr({
+                type: "hidden",
+                name: "requestSets[" + i + "][topics][" + key + "]",
+                value: val
+              }).appendTo($form);
+            });
+            $.each(f[i]["devices"], function (key, val) {
+              $("<input>").attr({
+                type: "hidden",
+                name: "requestSets[" + i + "][devices][" + key + "][group_name]",
+                value: val["group_name"]
+              }).appendTo($form);
+            });
+            $.each(f[i]["devices"], function (key, val) {
+              if (typeof f[i]["devices"][key]["device_name"] !== "undefined") $("<input>").attr({
+                type: "hidden",
+                name: "requestSets[" + i + "][devices][" + key + "][device_name]",
+                value: val["device_name"]
+              }).appendTo($form);
+            });
+          }
+          $form.appendTo("body").submit();
+        };
+        util.post(that.actionLink, myForm);
+      });
+    },
     addRequestSet: function addRequestSet() {
+      this.form.requestSets[this.nbSets] = {};
+      this.form.requestSets[this.nbSets]["topics"] = [];
+      this.form.requestSets[this.nbSets]["topics"][0] = "";
       this.nbSets++;
     }
   },
   computed: {
     actionLink: function actionLink() {
       return "http://localhost:8000/projects/".concat(this.project_id, "/show_data");
+    },
+    idModal: function idModal() {
+      return "specify_data".concat(this.project_id);
     }
   },
   mounted: function mounted() {
     var that = this;
-    $("#".concat("" + this.project_id)).on("hidden.bs.modal", function (e) {});
+    /* $("#".concat(this.idModal)).on("hidden.bs.modal", function(e) {
+      that.form.reset();
+    }); */
+  },
+  created: function created() {
+    this.form.requestSets = [];
+    this.form.requestSets[0] = {};
+    this.form.requestSets[0]["topics"] = [];
+    this.form.requestSets[0]["topics"][0] = "";
   }
 });
 
@@ -51006,6 +51064,7 @@ module.exports = Component.exports
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__device_vue__ = __webpack_require__(93);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__device_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__device_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__forms_form__ = __webpack_require__(2);
 //
 //
 //
@@ -51029,6 +51088,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+
 
 
 
@@ -51037,7 +51098,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   components: {
     device: __WEBPACK_IMPORTED_MODULE_0__device_vue___default.a
   },
-  props: ["numset"],
+  props: ["numset", "form"],
   data: function data() {
     return {
       nbTopics: 1,
@@ -51047,23 +51108,33 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
 
   methods: {
+    topicinputname: function topicinputname(index) {
+      return "requestSets[".concat(this.numset, "][topics][", index - 1, "]");
+    },
     addTopic: function addTopic() {
+      this.form.requestSets[this.numset]["topics"][this.nbTopics] = "";
       this.nbTopics++;
     },
     notAllDevices: function notAllDevices() {
+      this.form.requestSets[this.numset]["devices"] = [];
+      this.addDevice();
       this.allDevicesButton = false;
-      this.nbDevices++;
     },
     addDevice: function addDevice() {
+      this.form.requestSets[this.numset]["devices"][this.nbDevices] = {};
+      this.form.requestSets[this.numset]["devices"][this.nbDevices]["group_name"] = "";
       this.nbDevices++;
+    },
+    formErrorsHasTopicInput: function formErrorsHasTopicInput(index) {
+      return this.form.errors.has("requestSets.".concat(this.numset, ".topics.", index));
+    },
+    formErrorsGetTopicInput: function formErrorsGetTopicInput(index) {
+      return this.form.errors.get("requestSets.".concat(this.numset, ".topics.", index));
     }
   },
-  computed: {
-    topicinputname: function topicinputname() {
-      return "requestSets[".concat(this.numset, "][topics][]");
-    }
-  },
-  mounted: function mounted() {}
+  computed: {},
+  mounted: function mounted() {},
+  created: function created() {}
 });
 
 /***/ }),
@@ -51119,6 +51190,7 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__forms_form__ = __webpack_require__(2);
 //
 //
 //
@@ -51127,33 +51199,54 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    name: "device",
-    props: ["numset", "numdevice"],
-    data: function data() {
-        return {
-            showButtonSpecifyDevice: true
-        };
-    },
+  name: "device",
+  props: ["numset", "numdevice", "form"],
+  data: function data() {
+    return {
+      showButtonSpecifyDevice: true
+    };
+  },
 
-    methods: {
-        specifyDevice: function specifyDevice() {
-            this.showButtonSpecifyDevice = false;
-        }
+  methods: {
+    specifyDevice: function specifyDevice() {
+      this.form.requestSets[this.numset]["devices"][this.numdevice] = {};
+      this.form.requestSets[this.numset]["devices"][this.numdevice]["device_name"] = "";
+      this.showButtonSpecifyDevice = false;
     },
-    computed: {
-        group_name_input: function group_name_input() {
-            return "requestSets[".concat(this.numset, "][devices][", this.numdevice, "][group_name]");
-        },
-        device_name_input: function device_name_input() {
-            return "requestSets[".concat(this.numset, "][devices][", this.numdevice, "][device_name]");
-        },
-        showDeviceNameInput: function showDeviceNameInput() {
-            return !this.showButtonSpecifyDevice;
-        }
+    formErrorsHasDeviceNameInput: function formErrorsHasDeviceNameInput() {
+      return this.form.errors.has("requestSets.".concat(this.numset, ".devices.", this.numdevice, ".device_name"));
     },
-    mounted: function mounted() {}
+    formErrorsGetDeviceNameInput: function formErrorsGetDeviceNameInput() {
+      return this.form.errors.get("requestSets.".concat(this.numset, ".devices.", this.numdevice, ".device_name"));
+    },
+    formErrorsHasGroupNameInput: function formErrorsHasGroupNameInput() {
+      return this.form.errors.has("requestSets.".concat(this.numset, ".devices.", this.numdevice, ".group_name"));
+    },
+    formErrorsGetGroupNameInput: function formErrorsGetGroupNameInput() {
+      return this.form.errors.get("requestSets.".concat(this.numset, ".devices.", this.numdevice, ".group_name"));
+    }
+  },
+  computed: {
+    group_name_input: function group_name_input() {
+      return "requestSets[".concat(this.numset, "][devices][", this.numdevice, "][group_name]");
+    },
+    device_name_input: function device_name_input() {
+      return "requestSets[".concat(this.numset, "][devices][", this.numdevice, "][device_name]");
+    },
+    showDeviceNameInput: function showDeviceNameInput() {
+      return !this.showButtonSpecifyDevice;
+    }
+  },
+  mounted: function mounted() {},
+  created: function created() {}
 });
 
 /***/ }),
@@ -51166,13 +51259,50 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", [
     _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value:
+            _vm.form.requestSets[_vm.numset]["devices"][_vm.numdevice][
+              "group_name"
+            ],
+          expression:
+            "form.requestSets[numset]['devices'][numdevice]['group_name']"
+        }
+      ],
       attrs: {
         placeholder: "group_name",
         name: _vm.group_name_input,
-        value: "",
         type: "text"
+      },
+      domProps: {
+        value:
+          _vm.form.requestSets[_vm.numset]["devices"][_vm.numdevice][
+            "group_name"
+          ]
+      },
+      on: {
+        input: function($event) {
+          if ($event.target.composing) {
+            return
+          }
+          _vm.$set(
+            _vm.form.requestSets[_vm.numset]["devices"][_vm.numdevice],
+            "group_name",
+            $event.target.value
+          )
+        }
       }
     }),
+    _vm._v(" "),
+    _vm.formErrorsHasGroupNameInput()
+      ? _c("span", {
+          staticClass: "help is-danger invalid-feedback",
+          staticStyle: { display: "inline" },
+          domProps: { textContent: _vm._s(_vm.formErrorsGetGroupNameInput()) }
+        })
+      : _vm._e(),
     _vm._v(" "),
     _vm.showButtonSpecifyDevice
       ? _c(
@@ -51192,12 +51322,49 @@ var render = function() {
     _vm._v(" "),
     _vm.showDeviceNameInput
       ? _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value:
+                _vm.form.requestSets[_vm.numset]["devices"][_vm.numdevice][
+                  "device_name"
+                ],
+              expression:
+                "form.requestSets[numset]['devices'][numdevice]['device_name']"
+            }
+          ],
           attrs: {
             type: "text",
             placeholder: "device_name (empty for all)",
-            name: _vm.device_name_input,
-            value: ""
+            name: _vm.device_name_input
+          },
+          domProps: {
+            value:
+              _vm.form.requestSets[_vm.numset]["devices"][_vm.numdevice][
+                "device_name"
+              ]
+          },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.$set(
+                _vm.form.requestSets[_vm.numset]["devices"][_vm.numdevice],
+                "device_name",
+                $event.target.value
+              )
+            }
           }
+        })
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.formErrorsHasDeviceNameInput()
+      ? _c("span", {
+          staticClass: "help is-danger invalid-feedback",
+          staticStyle: { display: "inline" },
+          domProps: { textContent: _vm._s(_vm.formErrorsGetDeviceNameInput()) }
         })
       : _vm._e()
   ])
@@ -51229,13 +51396,45 @@ var render = function() {
       _vm._l(this.nbTopics, function(index) {
         return _c("li", { key: index }, [
           _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.form.requestSets[_vm.numset]["topics"][index - 1],
+                expression: "form.requestSets[numset]['topics'][index-1]"
+              }
+            ],
             attrs: {
               placeholder: "topic_name",
-              name: _vm.topicinputname,
-              type: "text",
-              value: ""
+              name: _vm.topicinputname(index),
+              type: "text"
+            },
+            domProps: {
+              value: _vm.form.requestSets[_vm.numset]["topics"][index - 1]
+            },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(
+                  _vm.form.requestSets[_vm.numset]["topics"],
+                  index - 1,
+                  $event.target.value
+                )
+              }
             }
-          })
+          }),
+          _vm._v(" "),
+          _vm.formErrorsHasTopicInput(index - 1)
+            ? _c("span", {
+                staticClass: "help is-danger invalid-feedback",
+                staticStyle: { display: "inline" },
+                domProps: {
+                  textContent: _vm._s(_vm.formErrorsGetTopicInput(index - 1))
+                }
+              })
+            : _vm._e()
         ])
       })
     ),
@@ -51284,7 +51483,11 @@ var render = function() {
                 { key: index },
                 [
                   _c("device", {
-                    attrs: { numset: _vm.numset, numdevice: index - 1 }
+                    attrs: {
+                      numset: _vm.numset,
+                      numdevice: index - 1,
+                      form: _vm.form
+                    }
                   })
                 ],
                 1
@@ -51333,12 +51536,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "modalcontainer",
-    {
-      attrs: {
-        modalId: "specify_data" + _vm.project_id,
-        btncontent: "Show statistics"
-      }
-    },
+    { attrs: { modalId: _vm.idModal, btncontent: "Show statistics" } },
     [
       _c("template", { slot: "header" }, [
         _vm._v("Specify data you want to see from the project:\n        "),
@@ -51361,6 +51559,15 @@ var render = function() {
                 method: "POST",
                 action: _vm.actionLink,
                 "accept-charset": "UTF-8"
+              },
+              on: {
+                submit: function($event) {
+                  $event.preventDefault()
+                  return _vm.onSubmit($event)
+                },
+                keydown: function($event) {
+                  _vm.form.errors.clear($event.target.name)
+                }
               }
             },
             [
@@ -51372,7 +51579,11 @@ var render = function() {
                     return _c(
                       "div",
                       { key: index, staticClass: "requestSets" },
-                      [_c("requestset", { attrs: { numset: index - 1 } })],
+                      [
+                        _c("requestset", {
+                          attrs: { numset: index - 1, form: _vm.form }
+                        })
+                      ],
                       1
                     )
                   }),
@@ -51395,65 +51606,257 @@ var render = function() {
               _vm._v(" "),
               _c("br"),
               _vm._v(" "),
-              _c("b", [_vm._v("Interval :")]),
+              _c("b", [_vm._v("Interval: ")]),
               _vm._v(" "),
-              _c("select", { attrs: { name: "interval" } }, [
-                _c("option", { attrs: { value: "Y" } }, [_vm._v("Year")]),
-                _vm._v(" "),
-                _c("option", { attrs: { value: "M" } }, [_vm._v("Month")]),
-                _vm._v(" "),
-                _c("option", { attrs: { value: "W" } }, [_vm._v("Week")]),
-                _vm._v(" "),
-                _c("option", { attrs: { value: "D" } }, [_vm._v("Day")]),
-                _vm._v(" "),
-                _c("option", { attrs: { value: "H" } }, [_vm._v("Hour")])
-              ]),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.form.interval,
+                      expression: "form.interval"
+                    }
+                  ],
+                  attrs: { name: "interval" },
+                  on: {
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.$set(
+                        _vm.form,
+                        "interval",
+                        $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      )
+                    }
+                  }
+                },
+                [
+                  _c("option", { attrs: { value: "Y", selected: "" } }, [
+                    _vm._v("Year")
+                  ]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "M" } }, [_vm._v("Month")]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "W" } }, [_vm._v("Week")]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "D" } }, [_vm._v("Day")]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "H" } }, [_vm._v("Hour")])
+                ]
+              ),
+              _vm._v(" "),
+              _vm.form.errors.has("interval")
+                ? _c("span", {
+                    staticClass: "help is-danger invalid-feedback",
+                    staticStyle: { display: "inline" },
+                    domProps: {
+                      textContent: _vm._s(_vm.form.errors.get("interval"))
+                    }
+                  })
+                : _vm._e(),
               _vm._v(" "),
               _c("br"),
               _vm._v(" "),
               _c("b", [_vm._v("Frequence: ")]),
               _vm._v(" "),
-              _c("select", { attrs: { name: "freq" } }, [
-                _c("option", { attrs: { value: "M" } }, [_vm._v("Month")]),
-                _vm._v(" "),
-                _c("option", { attrs: { value: "W" } }, [_vm._v("Week")]),
-                _vm._v(" "),
-                _c("option", { attrs: { value: "D" } }, [_vm._v("Day")]),
-                _vm._v(" "),
-                _c("option", { attrs: { value: "H" } }, [_vm._v("Hour")]),
-                _vm._v(" "),
-                _c("option", { attrs: { value: "Mn" } }, [_vm._v("Minute")])
-              ]),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.form.freq,
+                      expression: "form.freq"
+                    }
+                  ],
+                  attrs: { name: "freq" },
+                  on: {
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.$set(
+                        _vm.form,
+                        "freq",
+                        $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      )
+                    }
+                  }
+                },
+                [
+                  _c("option", { attrs: { value: "M", selected: "" } }, [
+                    _vm._v("Month")
+                  ]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "W" } }, [_vm._v("Week")]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "D" } }, [_vm._v("Day")]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "H" } }, [_vm._v("Hour")]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "Mn" } }, [_vm._v("Minute")])
+                ]
+              ),
+              _vm._v(" "),
+              _vm.form.errors.has("freq")
+                ? _c("span", {
+                    staticClass: "help is-danger invalid-feedback",
+                    staticStyle: { display: "inline" },
+                    domProps: {
+                      textContent: _vm._s(_vm.form.errors.get("freq"))
+                    }
+                  })
+                : _vm._e(),
               _vm._v(" "),
               _c("br"),
               _vm._v(" "),
               _c("b", [_vm._v("Aggregate: ")]),
               _vm._v(" "),
-              _c("select", { attrs: { name: "agg" } }, [
-                _c("option", { attrs: { value: "avg" } }, [_vm._v("avg")]),
-                _vm._v(" "),
-                _c("option", { attrs: { value: "max" } }, [_vm._v("max")]),
-                _vm._v(" "),
-                _c("option", { attrs: { value: "count" } }, [_vm._v("count")]),
-                _vm._v(" "),
-                _c("option", { attrs: { value: "min" } }, [_vm._v("min")]),
-                _vm._v(" "),
-                _c("option", { attrs: { value: "sum" } }, [_vm._v("sum")])
-              ]),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.form.agg,
+                      expression: "form.agg"
+                    }
+                  ],
+                  attrs: { name: "agg" },
+                  on: {
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.$set(
+                        _vm.form,
+                        "agg",
+                        $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      )
+                    }
+                  }
+                },
+                [
+                  _c("option", { attrs: { value: "avg", selected: "" } }, [
+                    _vm._v("avg")
+                  ]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "max" } }, [_vm._v("max")]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "count" } }, [
+                    _vm._v("count")
+                  ]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "min" } }, [_vm._v("min")]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "sum" } }, [_vm._v("sum")])
+                ]
+              ),
+              _vm._v(" "),
+              _vm.form.errors.has("agg")
+                ? _c("span", {
+                    staticClass: "help is-danger invalid-feedback",
+                    staticStyle: { display: "inline" },
+                    domProps: {
+                      textContent: _vm._s(_vm.form.errors.get("agg"))
+                    }
+                  })
+                : _vm._e(),
               _vm._v(" "),
               _c("br"),
               _vm._v(" "),
               _c("b", [_vm._v("Type of graph: ")]),
               _vm._v(" "),
-              _c("select", { attrs: { name: "type" } }, [
-                _c("option", { attrs: { value: "line" } }, [_vm._v("Line")]),
-                _vm._v(" "),
-                _c("option", { attrs: { value: "bar" } }, [_vm._v("Bar")])
-              ]),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.form.type,
+                      expression: "form.type"
+                    }
+                  ],
+                  attrs: { name: "type" },
+                  on: {
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.$set(
+                        _vm.form,
+                        "type",
+                        $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      )
+                    }
+                  }
+                },
+                [
+                  _c("option", { attrs: { value: "line" } }, [_vm._v("Line")]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "bar" } }, [_vm._v("Bar")])
+                ]
+              ),
+              _vm._v(" "),
+              _vm.form.errors.has("type")
+                ? _c("span", {
+                    staticClass: "help is-danger invalid-feedback",
+                    staticStyle: { display: "inline" },
+                    domProps: {
+                      textContent: _vm._s(_vm.form.errors.get("type"))
+                    }
+                  })
+                : _vm._e(),
               _vm._v(" "),
               _c("input", { attrs: { type: "submit", value: "OK" } })
             ]
-          )
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-footer" }, [
+            _vm.form.errors.has("otherError")
+              ? _c("div", {
+                  staticClass: "alert alert-danger",
+                  attrs: { role: "alert" },
+                  domProps: {
+                    textContent: _vm._s(_vm.form.errors.get("otherError"))
+                  }
+                })
+              : _vm._e()
+          ])
         ])
       ])
     ],
@@ -51723,7 +52126,7 @@ var content = __webpack_require__(102);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(3)("d402dd9a", content, false, {});
+var update = __webpack_require__(4)("d402dd9a", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -51742,7 +52145,7 @@ if(false) {
 /* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)(false);
+exports = module.exports = __webpack_require__(3)(false);
 // imports
 
 
@@ -51894,7 +52297,7 @@ var content = __webpack_require__(106);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(3)("0b62bd21", content, false, {});
+var update = __webpack_require__(4)("0b62bd21", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -51913,7 +52316,7 @@ if(false) {
 /* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(2)(false);
+exports = module.exports = __webpack_require__(3)(false);
 // imports
 
 
