@@ -38,7 +38,6 @@ class ProjectController extends Controller
      */
     public function index()
     {
-
         $projects = DB::table('users')
             ->select('users.id')
             ->where('users.id', Auth::id())
@@ -47,8 +46,8 @@ class ProjectController extends Controller
             ->join('projects', 'projects.id', '=', 'project_users.project_id')
             ->select('projects.id', 'projects.project_name', 'projects.owner')
             ->get();
-        $user_id=Auth::id();
-        return view('home', compact('projects','user_id'));
+        $user_id = Auth::id();
+        return view('home', compact('projects', 'user_id'));
     }
 
     /**
@@ -349,30 +348,30 @@ class ProjectController extends Controller
             $freq = request('freq');
             return view('show_data', compact('response', 'project_id', 'type', 'interval', 'freq'));
         } catch (RequestException $re) {
-            /* if ($request->wantsJson())
-                return response(
-                ['errors' => ["otherError" =>
-                    ['Error while handling the request, please try again!']]],
-                500
-            ); */
+            // if ($request->wantsJson())
+            //     return response(
+            //     ['errors' => ["otherError" =>
+            //         ['Error while handling the request, please try again!']]],
+            //     500
+            // );
             return Redirect::back()->withErrors(['Error while handling the request, please try again!']);
         }
 
 
             // test
-        /* $response = [[
-            ['x' => 'Jul 24 2018 13:16:17 GMT+0100', 'y' => 15],
-            ['x' => 'Jul 25 2018 15:29:38 GMT+0100', 'y' => 10],
-            ['x' => 'Jul 26 2018 13:18:45 GMT+0100', 'y' => 12],
-            ['x' => 'Jul 27 2018 19:16:52 GMT+0100', 'y' => 7],
-            ['x' => 'Jul 28 2018 10:16:26 GMT+0100', 'y' => 16],
-            ['x' => 'Jul 29 2018 23:18:12 GMT+0100', 'y' => 23],
-            ['x' => 'Jul 15 2018 23:18:12 GMT+0100', 'y' => 23],
-            ['x' => 'Jul 20 2018 10:16:26 GMT+0100', 'y' => 16],
-        ]];
-        $type = request('type');
-        $freq = request('freq');
-        return view('show_data', compact('response', 'project_id', 'type', 'interval', 'freq'));  */
+        // $response["series"] = [[
+        //     ['x' => 'Jul 24 2018 13:16:17 GMT+0100', 'y' => 15],
+        //     ['x' => 'Jul 25 2018 15:29:38 GMT+0100', 'y' => 10],
+        //     ['x' => 'Jul 26 2018 13:18:45 GMT+0100', 'y' => 12],
+        //     ['x' => 'Jul 27 2018 19:16:52 GMT+0100', 'y' => 7],
+        //     ['x' => 'Jul 28 2018 10:16:26 GMT+0100', 'y' => 16],
+        //     ['x' => 'Jul 29 2018 23:18:12 GMT+0100', 'y' => 23],
+        //     ['x' => 'Jul 15 2018 23:18:12 GMT+0100', 'y' => 23],
+        //     ['x' => 'Jul 20 2018 10:16:26 GMT+0100', 'y' => 16],
+        // ]];
+        // $type = request('type');
+        // $freq = request('freq');
+        // return view('show_data', compact('response', 'project_id', 'type', 'interval', 'freq')); 
             // testfin
 
 

@@ -16,7 +16,10 @@ class Device_groups_topicController extends Controller
 
     public function __construct(Request $request)
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => [
+            'authorizePublish',
+            'authorizeSubscribe'
+        ]]);
         $this->middleware(
             'userHasDeviceGroupTopic:' . Route::input('device_groups_topic'),
             ['except' => [
@@ -136,9 +139,10 @@ class Device_groups_topicController extends Controller
                 401
             );
         }
-        if ($request->wantsJson())
-            return '/device_groups/' . request('group_id');
-        return redirect('/device_groups/' . request('group_id'));
+        if ($request->wantsJson()) {
+            return "/device_groups/" . request('group_id');
+        }
+        return redirect("/device_groups/" . request('group_id'));
     }
 
     /**

@@ -52,6 +52,8 @@ const interval = @json($interval);
 const freq = @json($freq);
 const projectId = @json($project_id);
 
+console.log(responseTmp);
+
 var getSeries = function (response) {
     var series = [];
     for (var i = 0; i < response.length; i++) {
@@ -273,7 +275,7 @@ window.addEventListener('load', function () {
     series = getSeries(response);
     format = getFormat(interval, freq);
     traceGraphChart(series, type, format);
-    setInterval(function() {updateGraphChart(series);} , 2000);
+    //setInterval(function() {updateGraphChart(series);} , 2000);
 });
 
 </script>

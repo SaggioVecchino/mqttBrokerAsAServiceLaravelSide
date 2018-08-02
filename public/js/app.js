@@ -50981,7 +50981,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     };
   },
 
-  props: ["project"],
+  props: ["project", "userid"],
   methods: {
     deleteProject: function deleteProject() {
       var _this = this;

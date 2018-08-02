@@ -67,7 +67,7 @@ export default {
       theproject: this.project
     };
   },
-  props: ["project"],
+  props: ["project", "userid"],
   methods: {
     deleteProject() {
       var url = `http://localhost:8000/projects/${this.project.id}`;
