@@ -49454,38 +49454,38 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    name: "confirm",
-    props: ['btncontent', 'modalId', 'title', 'type', 'confirmButtonText', 'denyButtonText'],
-    data: function data() {
-        return {
-            isVisible: false,
-            idModal: this.modalId
-        };
-    },
+  name: "confirm",
+  props: ["btncontent", "modalId", "title", "type", "confirmButtonText", "denyButtonText"],
+  data: function data() {
+    return {
+      isVisible: false,
+      idModal: this.modalId
+    };
+  },
 
-    components: { 'modal': __WEBPACK_IMPORTED_MODULE_0__modal_vue___default.a },
-    methods: {
-        deny: function deny() {
-            this.$emit('deny');
-            $("#".concat('' + this.modalId)).modal('hide');
-        },
-        confirm: function confirm() {
-            this.$emit('confirm');
-        },
-        showModal: function showModal() {
-            this.isVisible = true;
-            $("#".concat('' + this.modalId)).modal({ show: true });
-        },
-        hideModal: function hideModal() {
-            this.isVisible = false;
-        }
+  components: { modal: __WEBPACK_IMPORTED_MODULE_0__modal_vue___default.a },
+  methods: {
+    deny: function deny() {
+      this.$emit("deny");
+      $("#".concat("" + this.modalId)).modal("hide");
     },
-    mounted: function mounted() {
-        var f = this.hideModal;
-        $("#".concat('' + this.modalId)).on('hidden.bs.modal', function (e) {
-            f();
-        });
+    confirm: function confirm() {
+      this.$emit("confirm");
+    },
+    showModal: function showModal() {
+      this.isVisible = true;
+      $("#".concat("" + this.modalId)).modal({ show: true });
+    },
+    hideModal: function hideModal() {
+      this.isVisible = false;
     }
+  },
+  mounted: function mounted() {
+    var f = this.hideModal;
+    $("#".concat("" + this.modalId)).on("hidden.bs.modal", function (e) {
+      f();
+    });
+  }
 });
 
 /***/ }),
@@ -49538,7 +49538,7 @@ var render = function() {
       ),
       _vm._v(" "),
       _c("button", {
-        class: "btn btn-" + _vm.type,
+        class: "btn btn-" + _vm.type + " btn-sm",
         attrs: { type: "button" },
         domProps: { textContent: _vm._s(_vm.btncontent) },
         on: { click: _vm.showModal }
@@ -51081,7 +51081,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -51180,10 +51180,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       form: new __WEBPACK_IMPORTED_MODULE_2__forms_form__["a" /* default */]({
         project_id: this.project_id,
         requestSets: [],
-        interval: "",
-        freq: "",
-        agg: "",
-        type: ""
+        interval: "Y",
+        freq: "M",
+        agg: "avg",
+        type: "line"
       }),
       nbSets: 1
     };
@@ -51208,8 +51208,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }).appendTo($form);
           });
           for (var i = 0; i < that.nbSets; i++) {
-            console.log(fields);
             var f = fields["requestSets"];
+            $("<input>").attr({
+              type: "hidden",
+              name: "requestSets[" + i + "][label]",
+              value: f[i]["label"]
+            }).appendTo($form);
             $.each(f[i]["topics"], function (key, val) {
               $("<input>").attr({
                 type: "hidden",
@@ -51239,6 +51243,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     addRequestSet: function addRequestSet() {
       this.form.requestSets[this.nbSets] = {};
+      this.form.requestSets[this.nbSets]["label"] = "Set-".concat(this.nbSets + 1);
       this.form.requestSets[this.nbSets]["topics"] = [];
       this.form.requestSets[this.nbSets]["topics"][0] = "";
       this.nbSets++;
@@ -51261,6 +51266,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   created: function created() {
     this.form.requestSets = [];
     this.form.requestSets[0] = {};
+    this.form.requestSets[0]["label"] = "Set-1";
     this.form.requestSets[0]["topics"] = [];
     this.form.requestSets[0]["topics"][0] = "";
   }
@@ -51346,6 +51352,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 
@@ -51387,6 +51394,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     formErrorsGetTopicInput: function formErrorsGetTopicInput(index) {
       return this.form.errors.get("requestSets.".concat(this.numset, ".topics.", index));
+    },
+    formErrorsHasSetNameError: function formErrorsHasSetNameError() {
+      return this.form.errors.has("requestSets.".concat(this.numset, ".label"));
+    },
+    formErrorsGetSetNameError: function formErrorsGetSetNameError() {
+      return this.form.errors.get("requestSets.".concat(this.numset, ".label"));
     }
   },
   computed: {},
@@ -51474,7 +51487,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
   methods: {
     specifyDevice: function specifyDevice() {
-      this.form.requestSets[this.numset]["devices"][this.numdevice] = {};
       this.form.requestSets[this.numset]["devices"][this.numdevice]["device_name"] = "";
       this.showButtonSpecifyDevice = false;
     },
@@ -51528,8 +51540,9 @@ var render = function() {
             "form.requestSets[numset]['devices'][numdevice]['group_name']"
         }
       ],
+      staticClass: "form-control",
       attrs: {
-        placeholder: "group_name",
+        placeholder: "Group name",
         name: _vm.group_name_input,
         type: "text"
       },
@@ -51565,7 +51578,7 @@ var render = function() {
       ? _c(
           "button",
           {
-            staticClass: "specifyDevice",
+            staticClass: "specifyDevice btn btn-secondary",
             attrs: { type: "button" },
             on: {
               click: function($event) {
@@ -51591,9 +51604,10 @@ var render = function() {
                 "form.requestSets[numset]['devices'][numdevice]['device_name']"
             }
           ],
+          staticClass: "form-control",
           attrs: {
             type: "text",
-            placeholder: "device_name (empty for all)",
+            placeholder: "Device name",
             name: _vm.device_name_input
           },
           domProps: {
@@ -51645,8 +51659,47 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("h1", [_vm._v("Set " + _vm._s(this.numset + 1) + ":")]),
+    _c("label", { attrs: { for: "label" + this.numset } }, [
+      _c("b", [_vm._v("Name of the set: ")])
+    ]),
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.form.requestSets[_vm.numset]["label"],
+          expression: "form.requestSets[numset]['label']"
+        }
+      ],
+      staticClass: "form-control",
+      attrs: {
+        placeholder: "Name of the set",
+        name: "label" + this.numset,
+        type: "text"
+      },
+      domProps: { value: _vm.form.requestSets[_vm.numset]["label"] },
+      on: {
+        input: function($event) {
+          if ($event.target.composing) {
+            return
+          }
+          _vm.$set(
+            _vm.form.requestSets[_vm.numset],
+            "label",
+            $event.target.value
+          )
+        }
+      }
+    }),
     _c("br"),
+    _vm._v(" "),
+    _vm.formErrorsHasSetNameError()
+      ? _c("span", {
+          staticClass: "help is-danger invalid-feedback",
+          staticStyle: { display: "inline" },
+          domProps: { textContent: _vm._s(_vm.formErrorsGetSetNameError()) }
+        })
+      : _vm._e(),
     _vm._v(" "),
     _c(
       "ul",
@@ -51661,8 +51714,9 @@ var render = function() {
                 expression: "form.requestSets[numset]['topics'][index-1]"
               }
             ],
+            staticClass: "form-control",
             attrs: {
-              placeholder: "topic_name",
+              placeholder: "Topic name",
               name: _vm.topicinputname(index),
               type: "text"
             },
@@ -51701,6 +51755,7 @@ var render = function() {
     _c(
       "button",
       {
+        staticClass: "btn btn-secondary",
         attrs: { type: "button" },
         on: {
           click: function($event) {
@@ -51718,6 +51773,7 @@ var render = function() {
       ? _c(
           "button",
           {
+            staticClass: "btn btn-secondary",
             attrs: { type: "button" },
             on: {
               click: function($event) {
@@ -51745,7 +51801,8 @@ var render = function() {
                       numdevice: index - 1,
                       form: _vm.form
                     }
-                  })
+                  }),
+                  _c("br")
                 ],
                 1
               )
@@ -51756,6 +51813,7 @@ var render = function() {
             _c(
               "button",
               {
+                staticClass: "btn btn-secondary",
                 attrs: { type: "button" },
                 on: {
                   click: function($event) {
@@ -51808,7 +51866,7 @@ var render = function() {
       ]),
       _vm._v(" "),
       _c("template", { slot: "body" }, [
-        _c("div", { staticClass: "card" }, [
+        _c("div", { staticClass: "card px-3 py-3" }, [
           _c(
             "form",
             {
@@ -51848,6 +51906,7 @@ var render = function() {
                   _c(
                     "button",
                     {
+                      staticClass: "btn btn-secondary",
                       attrs: { type: "button" },
                       on: {
                         click: function($event) {
@@ -51876,6 +51935,7 @@ var render = function() {
                       expression: "form.interval"
                     }
                   ],
+                  staticClass: "form-control",
                   attrs: { name: "interval" },
                   on: {
                     change: function($event) {
@@ -51898,9 +51958,7 @@ var render = function() {
                   }
                 },
                 [
-                  _c("option", { attrs: { value: "Y", selected: "" } }, [
-                    _vm._v("Year")
-                  ]),
+                  _c("option", { attrs: { value: "Y" } }, [_vm._v("Year")]),
                   _vm._v(" "),
                   _c("option", { attrs: { value: "M" } }, [_vm._v("Month")]),
                   _vm._v(" "),
@@ -51937,6 +51995,7 @@ var render = function() {
                       expression: "form.freq"
                     }
                   ],
+                  staticClass: "form-control",
                   attrs: { name: "freq" },
                   on: {
                     change: function($event) {
@@ -51959,9 +52018,7 @@ var render = function() {
                   }
                 },
                 [
-                  _c("option", { attrs: { value: "M", selected: "" } }, [
-                    _vm._v("Month")
-                  ]),
+                  _c("option", { attrs: { value: "M" } }, [_vm._v("Month")]),
                   _vm._v(" "),
                   _c("option", { attrs: { value: "W" } }, [_vm._v("Week")]),
                   _vm._v(" "),
@@ -51998,6 +52055,7 @@ var render = function() {
                       expression: "form.agg"
                     }
                   ],
+                  staticClass: "form-control",
                   attrs: { name: "agg" },
                   on: {
                     change: function($event) {
@@ -52020,9 +52078,7 @@ var render = function() {
                   }
                 },
                 [
-                  _c("option", { attrs: { value: "avg", selected: "" } }, [
-                    _vm._v("avg")
-                  ]),
+                  _c("option", { attrs: { value: "avg" } }, [_vm._v("avg")]),
                   _vm._v(" "),
                   _c("option", { attrs: { value: "max" } }, [_vm._v("max")]),
                   _vm._v(" "),
@@ -52061,6 +52117,7 @@ var render = function() {
                       expression: "form.type"
                     }
                   ],
+                  staticClass: "form-control",
                   attrs: { name: "type" },
                   on: {
                     change: function($event) {
@@ -52099,21 +52156,25 @@ var render = function() {
                   })
                 : _vm._e(),
               _vm._v(" "),
-              _c("input", { attrs: { type: "submit", value: "OK" } })
+              _c("br"),
+              _c("input", {
+                staticClass: "btn btn-primary",
+                attrs: { type: "submit", value: "OK" }
+              })
             ]
           ),
           _vm._v(" "),
-          _c("div", { staticClass: "card-footer" }, [
-            _vm.form.errors.has("otherError")
-              ? _c("div", {
+          _vm.form.errors.has("otherError")
+            ? _c("div", { staticClass: "card-footer" }, [
+                _c("div", {
                   staticClass: "alert alert-danger",
                   attrs: { role: "alert" },
                   domProps: {
                     textContent: _vm._s(_vm.form.errors.get("otherError"))
                   }
                 })
-              : _vm._e()
-          ])
+              ])
+            : _vm._e()
         ])
       ])
     ],
@@ -52652,7 +52713,11 @@ var render = function() {
           _vm._v(" "),
           _c("li", [
             _c("a", { attrs: { href: "/projects/" + _vm.project.id } }, [
-              _vm._v("show groups")
+              _c(
+                "button",
+                { staticClass: "btn btn-primary", attrs: { type: "button" } },
+                [_vm._v("show groups")]
+              )
             ])
           ]),
           _vm._v(" "),
@@ -53090,7 +53155,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -53133,29 +53198,29 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    name: "group",
-    components: {
-        'editgroup': __WEBPACK_IMPORTED_MODULE_0__editgroupform___default.a,
-        'confirm': __WEBPACK_IMPORTED_MODULE_1__confirm_vue___default.a
-    },
-    data: function data() {
-        return {
-            thegroup: this.group
-        };
-    },
+  name: "group",
+  components: {
+    editgroup: __WEBPACK_IMPORTED_MODULE_0__editgroupform___default.a,
+    confirm: __WEBPACK_IMPORTED_MODULE_1__confirm_vue___default.a
+  },
+  data: function data() {
+    return {
+      thegroup: this.group
+    };
+  },
 
-    props: ['group'],
-    methods: {
-        deleteGroup: function deleteGroup() {
-            var _this = this;
+  props: ["group"],
+  methods: {
+    deleteGroup: function deleteGroup() {
+      var _this = this;
 
-            var url = 'http://localhost:8000/device_groups/' + this.group.id;
-            axios.delete(url).then(function (response) {
-                _this.$emit('groupDeleted', _this.group.id);
-                $("#".concat("delete", _this.group.id)).modal('hide');
-            });
-        }
+      var url = "http://localhost:8000/device_groups/" + this.group.id;
+      axios.delete(url).then(function (response) {
+        _this.$emit("groupDeleted", _this.group.id);
+        $("#".concat("delete", _this.group.id)).modal("hide");
+      });
     }
+  }
 });
 
 /***/ }),
@@ -53180,7 +53245,11 @@ var render = function() {
       _c("ul", [
         _c("li", [
           _c("a", { attrs: { href: "/device_groups/" + _vm.group.id } }, [
-            _vm._v("show")
+            _c(
+              "button",
+              { staticClass: "btn btn-primary", attrs: { type: "button" } },
+              [_vm._v("show")]
+            )
           ])
         ]),
         _vm._v(" "),

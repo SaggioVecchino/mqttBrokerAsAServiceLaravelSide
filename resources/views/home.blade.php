@@ -3,7 +3,7 @@
 @section('content')
 
     <div class="container" >
-    <a href="/" class="btn">QUIT!</a>
+    <a href="/" class="btn btn btn-outline-danger">QUIT!</a>
     <div class="row justify-content-center">
         <div class="col-md-8">
             @if ($errors->any())

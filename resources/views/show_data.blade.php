@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <div class="container">
-    <a href="/projects" class="btn">Go back!</a>
+    <a href="/projects" class="btn btn-outline-danger">Go back!</a>
     <div class="row justify-content-center">
         <div class="col-md-8">
             <!-- @if ($errors->any())
@@ -20,7 +20,7 @@
                 </div>
 
                 <!-- <div class="ct-chart ct-perfect-fourth"></div> -->
-                <canvas id="myChart" width="400" height="400"></canvas>
+                <canvas id="myChart"></canvas>
                 
 
                 <div class="card-body">
@@ -51,10 +51,12 @@ const type = @json($type);
 const interval = @json($interval);
 const freq = @json($freq);
 const projectId = @json($project_id);
+const defaultFormat = 'MMM D YYYY h:mm a'
+var format = defaultFormat;
+var config = {};
+var updateInterval = 0;
 
-console.log(responseTmp);
-
-var getSeries = function (response) {
+var getSeries = function (response, labels) {
     var series = [];
     for (var i = 0; i < response.length; i++) {
         var data = response[i].map(o => { return { x: new Date(o.x), y: o.y } });
@@ -64,10 +66,10 @@ var getSeries = function (response) {
         });
 
         series[i] = {
-            label: 'series-'.concat(i),
+            label: labels[i],
             data: data,
             fill: false,
-            // backgroundColor: color(dataSetColor).alpha(0.5).rgbString(),
+            backgroundColor: dataSetColor,
             borderColor: dataSetColor
         };
     }
@@ -123,7 +125,7 @@ var getFormat = function (interval, freq) {
                     return 'h:mm a';
             }
     }
-    return 'MMM D YYYY h:mm a';
+    return defaultFormat;
 }
 
 /* var traceGraphChartist = function (series, type, format) {
@@ -187,22 +189,27 @@ var getLabels = function (series) {
 
 var traceGraphChart = function (series, type, format) {
 
-    var config = {
+    config = {
         type: type,
         data: {
-            // labels: getLabels(series),
             datasets: series
         },
         options: {
-            title: {
-                text: 'Chart.js Time Scale'
-            },
-            scales: {
+				responsive: true,
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+                scales: {
                 xAxes: [{
+                    display: true,
                     type: 'time',
                     time: {
                         format: format,
-                        // round: 'day'
                         tooltipFormat: format
                     },
                     scaleLabel: {
@@ -211,16 +218,18 @@ var traceGraphChart = function (series, type, format) {
                     }
                 }],
                 yAxes: [{
+                    display: true,
                     scaleLabel: {
                         display: true,
                         labelString: 'value'
                     }
                 }]
             },
-        }
+		}
     };
 
     var ctx = document.getElementById('myChart').getContext('2d');
+
     window.myLine = new Chart(ctx, config);
 }
 
@@ -248,6 +257,9 @@ var updateSeries = function (oldSeries, newSeries) {
                 oldSeries[i].data.push({x: new Date(e.x), y: e.y});
             }
         })
+        oldSeries[i].data.sort(function (a, b) {
+            return a.x - b.x;
+        });
     }
 }
 
@@ -261,21 +273,21 @@ var updateGraphChart = function (series) {
             agg: agg
         },
         function (response, status) {
-            if (status !== 'success') {
-                console.log('status error: ' + status);
-                return;
-            }
             updateSeries(series, response);
-            traceGraphChart(series, type, format);
+            config.data.datasets = series;
+            window.myLine.update();
+        }).fail(function(){
+            console.log("hahha");
+            clearInterval(updateInterval);
         });
 }
 
 window.addEventListener('load', function () {
-    //traceGraphChartist(getSeries(response), type, getFormat(interval, freq));
-    series = getSeries(response);
+    var labels = requestSets.map(o=>o.label)
+    var series = getSeries(response, labels);
     format = getFormat(interval, freq);
     traceGraphChart(series, type, format);
-    //setInterval(function() {updateGraphChart(series);} , 2000);
+    updateInterval = setInterval(function() {updateGraphChart(series);} , 1500);
 });
 
 </script>

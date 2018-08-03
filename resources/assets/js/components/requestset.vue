@@ -1,22 +1,23 @@
 <template>
     <div>
-        <h1>Set {{this.numset + 1}}:</h1><br>
+        <label :for="'label'+this.numset"><b>Name of the set: </b></label><input placeholder="Name of the set" :name="'label'+this.numset" type="text" v-model="form.requestSets[numset]['label']" class="form-control"><br>
+        <span class="help is-danger invalid-feedback" style="display: inline" v-if="formErrorsHasSetNameError()" v-text="formErrorsGetSetNameError()"></span>
         <ul>
             <li v-for="index in this.nbTopics" :key="index">
-                <input placeholder="topic_name" :name="topicinputname(index)" type="text" v-model="form.requestSets[numset]['topics'][index-1]">
+                <input placeholder="Topic name" :name="topicinputname(index)" type="text" v-model="form.requestSets[numset]['topics'][index-1]" class="form-control">
                 <span class="help is-danger invalid-feedback" style="display: inline" v-if="formErrorsHasTopicInput(index-1)" v-text="formErrorsGetTopicInput(index-1)"></span>
             </li>
         </ul>
         <br>
-        <button type="button" @click="addTopic()">Add a topic</button>
+        <button type="button" @click="addTopic()" class="btn btn-secondary">Add a topic</button>
         <br><br>
-        <button type="button" @click="notAllDevices()" v-if="allDevicesButton">Not all devices of the project</button><br>
+        <button type="button" @click="notAllDevices()" v-if="allDevicesButton" class="btn btn-secondary">Not all devices of the project</button><br>
         <ul v-if="nbDevices>0"><!-- -->
             <li v-for="index in nbDevices" :key="index">
-                <device :numset="numset" :numdevice="index-1" :form="form"></device>
+                <device :numset="numset" :numdevice="index-1" :form="form"></device><br>
             </li>
             <br>
-            <button type="button" @click="addDevice()">Add devices</button>
+            <button type="button" @click="addDevice()" class="btn btn-secondary">Add devices</button>
         </ul>
         <hr>
     </div>
@@ -69,6 +70,12 @@ export default {
       return this.form.errors.get(
         "requestSets.".concat(this.numset, ".topics.", index)
       );
+    },
+    formErrorsHasSetNameError() {
+      return this.form.errors.has("requestSets.".concat(this.numset, ".label"));
+    },
+    formErrorsGetSetNameError() {
+      return this.form.errors.get("requestSets.".concat(this.numset, ".label"));
     }
   },
   computed: {},

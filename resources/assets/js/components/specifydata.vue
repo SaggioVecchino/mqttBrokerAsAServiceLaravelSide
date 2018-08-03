@@ -7,20 +7,20 @@
             <b>Project name</b>: {{this.project_name}}
         </template>
         <template slot="body">
-            <div class="card">
+            <div class="card px-3 py-3">
                 <form method="POST" :action="actionLink" accept-charset="UTF-8" @submit.prevent="onSubmit" @keydown="form.errors.clear($event.target.name)">
                 <div class="card-body">
                     <!-- -->
                     <div class="requestSets" v-for="index in nbSets" :key="index">
                         <requestset :numset="index-1" :form="form"></requestset>
                     </div>
-                    <button @click="addRequestSet()" type="button">Add a set</button>
+                    <button @click="addRequestSet()" class="btn btn-secondary" type="button">Add a set</button>
 
                 </div>
                 <br>
                 <b>Interval: </b>
-                <select name="interval" v-model="form.interval">
-                    <option value="Y" selected>Year</option>
+                <select name="interval" v-model="form.interval" class="form-control">
+                    <option value="Y">Year</option>
                     <option value="M">Month</option>
                     <option value="W">Week</option>
                     <option value="D">Day</option>
@@ -29,8 +29,8 @@
                 <span class="help is-danger invalid-feedback" style="display: inline" v-if="form.errors.has('interval')" v-text="form.errors.get('interval')"></span>
                 <br>
                 <b>Frequence: </b>
-                <select name="freq" v-model="form.freq">
-                    <option value="M" selected>Month</option>
+                <select name="freq" v-model="form.freq" class="form-control">
+                    <option value="M">Month</option>
                     <option value="W">Week</option>
                     <option value="D">Day</option>
                     <option value="H">Hour</option>
@@ -39,8 +39,8 @@
                 <span class="help is-danger invalid-feedback" style="display: inline" v-if="form.errors.has('freq')" v-text="form.errors.get('freq')"></span>
                 <br>
                 <b>Aggregate: </b>
-                <select name="agg" v-model="form.agg">
-                    <option value="avg" selected>avg</option>
+                <select name="agg" v-model="form.agg" class="form-control">
+                    <option value="avg">avg</option>
                     <option value="max">max</option>
                     <option value="count">count</option>
                     <option value="min">min</option>
@@ -49,15 +49,15 @@
                 <span class="help is-danger invalid-feedback" style="display: inline" v-if="form.errors.has('agg')" v-text="form.errors.get('agg')"></span>
                 <br>
                 <b>Type of graph: </b>
-                <select name="type" v-model="form.type">
+                <select name="type" v-model="form.type" class="form-control">
                     <option value="line">Line</option>
                     <option value="bar">Bar</option>
                 </select>
                 <span class="help is-danger invalid-feedback" style="display: inline" v-if="form.errors.has('type')" v-text="form.errors.get('type')"></span>
-                <input type="submit" value="OK">
+                <br><input type="submit" value="OK" class="btn btn-primary">
               </form>
-              <div class="card-footer">
-                  <div class="alert alert-danger" role="alert" v-if="form.errors.has('otherError')" v-text="form.errors.get('otherError')"></div>
+              <div class="card-footer" v-if="form.errors.has('otherError')">
+                  <div class="alert alert-danger" role="alert" v-text="form.errors.get('otherError')"></div>
               </div>
             </div>
         </template>
@@ -81,10 +81,10 @@ export default {
       form: new Form({
         project_id: this.project_id,
         requestSets: [],
-        interval: "",
-        freq: "",
-        agg: "",
-        type: ""
+        interval: "Y",
+        freq: "M",
+        agg: "avg",
+        type: "line"
       }),
       nbSets: 1
     };
@@ -111,8 +111,14 @@ export default {
                 .appendTo($form);
           });
           for (var i = 0; i < that.nbSets; i++) {
-            console.log(fields);
             var f = fields["requestSets"];
+            $("<input>")
+              .attr({
+                type: "hidden",
+                name: "requestSets[" + i + "][label]",
+                value: f[i]["label"]
+              })
+              .appendTo($form);
             $.each(f[i]["topics"], function(key, val) {
               $("<input>")
                 .attr({
@@ -155,6 +161,9 @@ export default {
     },
     addRequestSet() {
       this.form.requestSets[this.nbSets] = {};
+      this.form.requestSets[this.nbSets]["label"] = "Set-".concat(
+        this.nbSets + 1
+      );
       this.form.requestSets[this.nbSets]["topics"] = [];
       this.form.requestSets[this.nbSets]["topics"][0] = "";
       this.nbSets++;
@@ -180,6 +189,7 @@ export default {
   created() {
     this.form.requestSets = [];
     this.form.requestSets[0] = {};
+    this.form.requestSets[0]["label"] = "Set-1";
     this.form.requestSets[0]["topics"] = [];
     this.form.requestSets[0]["topics"][0] = "";
   }

@@ -6,7 +6,7 @@
             <ul>
                 <li>
                 <specifydata :project_id="project.id" :project_name="project.project_name"></specifydata></li>
-                <li><a :href="'/projects/'+project.id">show groups</a></li>
+                <li><a :href="'/projects/'+project.id"><button type="button" class="btn btn-primary">show groups</button></a></li>
                 <li  v-if="userid === theproject.owner">
                     <confirm v-if="userid === theproject.owner" btncontent="Delete" :modalId="'delete'+project.id"
                              :title="'Are you sure to delete the project: '+project.project_name+' with id :'+project.id"

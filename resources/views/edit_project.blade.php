@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <a href="/projects" class="btn">Go back!</a>
+    <a href="/projects" class="btn btn btn-outline-danger">Go back!</a>
     <div class="row justify-content-center">
         <div class="col-md-8">
             @if ($errors->any())

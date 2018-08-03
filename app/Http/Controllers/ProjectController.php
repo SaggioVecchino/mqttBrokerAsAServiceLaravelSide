@@ -226,6 +226,7 @@ class ProjectController extends Controller
                 'max:255',
                 'regex:/^(([\w ]+|\+)(\/([\w ]+|\+))*(\/\#)?|#)$/'
             ],
+            'requestSets.*.label' => 'required|string|min:1',
             'interval' => [
                 'required',
                 Rule::in($interval_enum),
@@ -326,52 +327,47 @@ class ProjectController extends Controller
             return response(200);
 
 
-        try {
+        // try {
 
-            $requestContent = [
-                'headers' => [
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json; charset=UTF-8'
-                ],
-                'json' => $body
-            ];
+        //     $requestContent = [
+        //         'headers' => [
+        //             'Accept' => 'application/json',
+        //             'Content-Type' => 'application/json; charset=UTF-8'
+        //         ],
+        //         'json' => $body
+        //     ];
 
-            $link = 'localhost:1233';
+        //     $link = 'localhost:1233';
 
-            $response['series'] = json_decode((new Client())->request('POST', 'http://' . $link . '/data/' . $project_id, $requestContent)
-                ->getBody()->getContents());
-            // dd($response);
-            $response['requestSets'] = $requestSets;//On peut optimiser
-            $response['agg'] = request('agg');
+        //     $response['series'] = json_decode((new Client())->request('POST', 'http://' . $link . '/data/' . $project_id, $requestContent)
+        //         ->getBody()->getContents());
+        //     // dd($response);
+        //     $response['requestSets'] = $requestSets;//On peut optimiser
+        //     $response['agg'] = request('agg');
 
-            $type = request('type');
-            $freq = request('freq');
-            return view('show_data', compact('response', 'project_id', 'type', 'interval', 'freq'));
-        } catch (RequestException $re) {
-            // if ($request->wantsJson())
-            //     return response(
-            //     ['errors' => ["otherError" =>
-            //         ['Error while handling the request, please try again!']]],
-            //     500
-            // );
-            return Redirect::back()->withErrors(['Error while handling the request, please try again!']);
-        }
+        //     $type = request('type');
+        //     $freq = request('freq');
+        //     return view('show_data', compact('response', 'project_id', 'type', 'interval', 'freq'));
+        // } catch (RequestException $re) {
+        //     // if ($request->wantsJson())
+        //     //     return response(
+        //     //     ['errors' => ["otherError" =>
+        //     //         ['Error while handling the request, please try again!']]],
+        //     //     500
+        //     // );
+        //     return Redirect::back()->withErrors(['Error while handling the request, please try again!']);
+        // }
 
 
             // test
-        // $response["series"] = [[
-        //     ['x' => 'Jul 24 2018 13:16:17 GMT+0100', 'y' => 15],
-        //     ['x' => 'Jul 25 2018 15:29:38 GMT+0100', 'y' => 10],
-        //     ['x' => 'Jul 26 2018 13:18:45 GMT+0100', 'y' => 12],
-        //     ['x' => 'Jul 27 2018 19:16:52 GMT+0100', 'y' => 7],
-        //     ['x' => 'Jul 28 2018 10:16:26 GMT+0100', 'y' => 16],
-        //     ['x' => 'Jul 29 2018 23:18:12 GMT+0100', 'y' => 23],
-        //     ['x' => 'Jul 15 2018 23:18:12 GMT+0100', 'y' => 23],
-        //     ['x' => 'Jul 20 2018 10:16:26 GMT+0100', 'y' => 16],
-        // ]];
-        // $type = request('type');
-        // $freq = request('freq');
-        // return view('show_data', compact('response', 'project_id', 'type', 'interval', 'freq')); 
+        $response["series"] = [[
+            ['x' => 'Jul 1 2018 13:16:17 GMT+0100', 'y' => 15],
+        ]];
+        $response['requestSets'] = $requestSets;
+        $response['agg'] = request('agg');
+        $type = request('type');
+        $freq = request('freq');
+        return view('show_data', compact('response', 'project_id', 'type', 'interval', 'freq')); 
             // testfin
 
 
@@ -401,6 +397,7 @@ class ProjectController extends Controller
                 'max:255',
                 'regex:/^(([\w ]+|\+)(\/([\w ]+|\+))*(\/\#)?|#)$/'
             ],
+            'requestSets.*.label' => 'required|string|min:1',
             'freq' => [
                 'required',
                 Rule::in($enum),
@@ -428,8 +425,6 @@ class ProjectController extends Controller
         $body['interval'] = 'T' . $interval;
         $body['freq'] = request('freq');
         $body['agg'] = request('agg');
-
-
 
         for ($l = 0; $l < count(request('requestSets')); $l++) {
             $body['requestSets'][$l]['topics'] =
@@ -480,42 +475,32 @@ class ProjectController extends Controller
         }
 
 
-        try {
-            $requestContent = [
-                'headers' => [
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json; charset=UTF-8'
-                ],
-                'json' => $body
-            ];
+        // try {
+        //     $requestContent = [
+        //         'headers' => [
+        //             'Accept' => 'application/json',
+        //             'Content-Type' => 'application/json; charset=UTF-8'
+        //         ],
+        //         'json' => $body
+        //     ];
 
-            $link = 'localhost:1233';
+        //     $link = 'localhost:1233';
 
-            $response = json_decode((new Client())->request('POST', 'http://' . $link . '/data/' . $project_id, $requestContent)
-                ->getBody()->getContents());
-            return response()->json($response);
-                // return view('show_data', compact('response', 'project_id', 'type', 'interval', 'freq'));
-        } catch (RequestException $re) {
-            abort(500);
-                // return Redirect::back()->withErrors(['Error while handling the request, please try again!']);
-        }
-
+        //     $response = json_decode((new Client())->request('POST', 'http://' . $link . '/data/' . $project_id, $requestContent)
+        //         ->getBody()->getContents());
+        //     return response()->json($response);
+        //         // return view('show_data', compact('response', 'project_id', 'type', 'interval', 'freq'));
+        // } catch (RequestException $re) {
+        //     abort(500);
+        //         // return Redirect::back()->withErrors(['Error while handling the request, please try again!']);
+        // }
 
         // test
-        /* $response = [[
-            ['x' => 'Jul 24 2018 13:16:17 GMT+0100', 'y' => 15],
-            ['x' => 'Jul 25 2018 15:29:38 GMT+0100', 'y' => 10],
-            ['x' => 'Jul 26 2018 13:18:45 GMT+0100', 'y' => 12],
-            ['x' => 'Jul 27 2018 19:16:52 GMT+0100', 'y' => 7],
-            ['x' => 'Jul 28 2018 10:16:26 GMT+0100', 'y' => 16],
-            ['x' => 'Jul 29 2018 23:18:12 GMT+0100', 'y' => 23],
-            ['x' => 'Jul 15 2018 23:18:12 GMT+0100', 'y' => 23],
-            ['x' => 'Jul 20 2018 10:16:26 GMT+0100', 'y' => 16],
+        $response = [[
+            ['x' => 'Jul ' . random_int(1, 31) . ' 2018 13:16:17 GMT+0100', 'y' => random_int(3, 40)],
         ]];
-        $type = request('type');
-        $freq = request('freq');
 
-        return view('show_data', compact('response', 'project_id', 'type', 'interval', 'freq')); */
+        return response()->json($response);
         // testfin
 
 

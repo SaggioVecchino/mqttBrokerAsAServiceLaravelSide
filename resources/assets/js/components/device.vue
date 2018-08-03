@@ -1,10 +1,10 @@
 <template>
     <div>
-        <input placeholder="group_name" :name="group_name_input" v-model="form.requestSets[numset]['devices'][numdevice]['group_name']"
+        <input class="form-control" placeholder="Group name" :name="group_name_input" v-model="form.requestSets[numset]['devices'][numdevice]['group_name']"
             type="text">
         <span class="help is-danger invalid-feedback" style="display: inline" v-if="formErrorsHasGroupNameInput()" v-text="formErrorsGetGroupNameInput()"></span>
-        <button class="specifyDevice" type="button" @click="specifyDevice()" v-if="showButtonSpecifyDevice">Just some devices of the group</button>
-        <input type="text" placeholder="device_name (empty for all)" :name="device_name_input" v-model="form.requestSets[numset]['devices'][numdevice]['device_name']"
+        <button class="specifyDevice btn btn-secondary" type="button" @click="specifyDevice()" v-if="showButtonSpecifyDevice">Just some devices of the group</button>
+        <input type="text" class="form-control" placeholder="Device name" :name="device_name_input" v-model="form.requestSets[numset]['devices'][numdevice]['device_name']"
             v-if="showDeviceNameInput">
         <span class="help is-danger invalid-feedback" style="display: inline" v-if="formErrorsHasDeviceNameInput()" v-text="formErrorsGetDeviceNameInput()"></span>
     </div>
@@ -23,7 +23,6 @@ export default {
   },
   methods: {
     specifyDevice() {
-      this.form.requestSets[this.numset]["devices"][this.numdevice] = {};
       this.form.requestSets[this.numset]["devices"][this.numdevice][
         "device_name"
       ] =
