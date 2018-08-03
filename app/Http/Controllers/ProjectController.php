@@ -327,47 +327,47 @@ class ProjectController extends Controller
             return response(200);
 
 
-        // try {
+        try {
 
-        //     $requestContent = [
-        //         'headers' => [
-        //             'Accept' => 'application/json',
-        //             'Content-Type' => 'application/json; charset=UTF-8'
-        //         ],
-        //         'json' => $body
-        //     ];
+            $requestContent = [
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json; charset=UTF-8'
+                ],
+                'json' => $body
+            ];
 
-        //     $link = 'localhost:1233';
+            $link = 'localhost:1233';
 
-        //     $response['series'] = json_decode((new Client())->request('POST', 'http://' . $link . '/data/' . $project_id, $requestContent)
-        //         ->getBody()->getContents());
-        //     // dd($response);
-        //     $response['requestSets'] = $requestSets;//On peut optimiser
-        //     $response['agg'] = request('agg');
+            $response['series'] = json_decode((new Client())->request('POST', 'http://' . $link . '/data/' . $project_id, $requestContent)
+                ->getBody()->getContents());
+            // dd($response);
+            $response['requestSets'] = $requestSets;//On peut optimiser
+            $response['agg'] = request('agg');
 
-        //     $type = request('type');
-        //     $freq = request('freq');
-        //     return view('show_data', compact('response', 'project_id', 'type', 'interval', 'freq'));
-        // } catch (RequestException $re) {
-        //     // if ($request->wantsJson())
-        //     //     return response(
-        //     //     ['errors' => ["otherError" =>
-        //     //         ['Error while handling the request, please try again!']]],
-        //     //     500
-        //     // );
-        //     return Redirect::back()->withErrors(['Error while handling the request, please try again!']);
-        // }
+            $type = request('type');
+            $freq = request('freq');
+            return view('show_data', compact('response', 'project_id', 'type', 'interval', 'freq'));
+        } catch (RequestException $re) {
+            // if ($request->wantsJson())
+            //     return response(
+            //     ['errors' => ["otherError" =>
+            //         ['Error while handling the request, please try again!']]],
+            //     500
+            // );
+            return Redirect::back()->withErrors(['Error while handling the request, please try again!']);
+        }
 
 
             // test
-        $response["series"] = [[
-            ['x' => 'Jul 1 2018 13:16:17 GMT+0100', 'y' => 15],
-        ]];
-        $response['requestSets'] = $requestSets;
-        $response['agg'] = request('agg');
-        $type = request('type');
-        $freq = request('freq');
-        return view('show_data', compact('response', 'project_id', 'type', 'interval', 'freq')); 
+        // $response["series"] = [[
+        //     ['x' => 'Jul 1 2018 13:16:17 GMT+0100', 'y' => 15],
+        // ]];
+        // $response['requestSets'] = $requestSets;
+        // $response['agg'] = request('agg');
+        // $type = request('type');
+        // $freq = request('freq');
+        // return view('show_data', compact('response', 'project_id', 'type', 'interval', 'freq')); 
             // testfin
 
 
@@ -475,30 +475,30 @@ class ProjectController extends Controller
         }
 
 
-        // try {
-        //     $requestContent = [
-        //         'headers' => [
-        //             'Accept' => 'application/json',
-        //             'Content-Type' => 'application/json; charset=UTF-8'
-        //         ],
-        //         'json' => $body
-        //     ];
+        try {
+            $requestContent = [
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json; charset=UTF-8'
+                ],
+                'json' => $body
+            ];
 
-        //     $link = 'localhost:1233';
+            $link = 'localhost:1233';
 
-        //     $response = json_decode((new Client())->request('POST', 'http://' . $link . '/data/' . $project_id, $requestContent)
-        //         ->getBody()->getContents());
-        //     return response()->json($response);
-        //         // return view('show_data', compact('response', 'project_id', 'type', 'interval', 'freq'));
-        // } catch (RequestException $re) {
-        //     abort(500);
-        //         // return Redirect::back()->withErrors(['Error while handling the request, please try again!']);
-        // }
+            $response = json_decode((new Client())->request('POST', 'http://' . $link . '/data/' . $project_id, $requestContent)
+                ->getBody()->getContents());
+            return response()->json($response);
+                // return view('show_data', compact('response', 'project_id', 'type', 'interval', 'freq'));
+        } catch (RequestException $re) {
+            abort(500);
+                // return Redirect::back()->withErrors(['Error while handling the request, please try again!']);
+        }
 
         // test
-        $response = [[
-            ['x' => 'Jul ' . random_int(1, 31) . ' 2018 13:16:17 GMT+0100', 'y' => random_int(3, 40)],
-        ]];
+        // $response = [[
+        //     ['x' => 'Jul ' . random_int(1, 31) . ' 2018 13:16:17 GMT+0100', 'y' => random_int(3, 40)],
+        // ]];
 
         return response()->json($response);
         // testfin
