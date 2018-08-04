@@ -264,7 +264,7 @@ var updateSeries = function (oldSeries, newSeries) {
 }
 
 var updateGraphChart = function (series) {
-    $.post(`http://localhost:8000/projects/${projectId}/update_data`,
+    $.post(`http://iot2.brainiac.dz/projects/${projectId}/update_data`,
         {
             type: type,
             freq: freq,
