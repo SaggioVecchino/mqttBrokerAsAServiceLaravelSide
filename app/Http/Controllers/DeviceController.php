@@ -110,9 +110,6 @@ class DeviceController extends Controller
         return Device::all();
     }
 
-
-
-
     function auth(Request $request)
     {
 

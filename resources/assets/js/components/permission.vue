@@ -10,7 +10,7 @@
             <ul v-if="permissions.length>0">
                 <li v-for="element in thepermission" :key="element.id">
                     {{element.topic_name}}
-                    <confirm btncontent="Delete" :modalId="'delete'+element.id+type+allow"
+                    <confirm style="display: inline" btncontent="Delete" :modalId="'delete'+element.id+type+allow"
                              :title="'Are you sure to delete the'+title+' on the topic: '+element.topic_name"
                              confirmButtonText="YES" denyButtonText="No" type="danger" @confirm="deletePermision(element)"></confirm>
                 </li>
