@@ -17,7 +17,7 @@ class ContributorController extends Controller
         $this->middleware('userOwnsProject:' . Route::input('project'), ['only' => [
             'destroy'
         ]]);
-        $this->middleware('userExists:' . request('user_id'), ['only' => [
+        $this->middleware('userExists:' . Route::input('contributor'), ['only' => [
             'destroy'
         ]]);
     }

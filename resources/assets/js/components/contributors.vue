@@ -111,7 +111,7 @@
             },
 
             deleteContributor(e){
-               if (confirm(`are you sure to delete the contributer: ${e.name}`))
+               if (confirm(`are you sure to delete the contributor: ${e.name}`))
                {
 
                    let url=`http://iot2.brainiac.dz/projects/${this.projectid}/contributors/${e.id}`
