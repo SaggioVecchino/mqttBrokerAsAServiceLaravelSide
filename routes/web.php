@@ -46,6 +46,8 @@ Route::resources([
     'device_groups' => 'DeviceGroupController'
 ]);
 
+Route::patch('/broker/disconnectalldevices', 'BrokerController@disconnectAllDevices');
+
 Route::prefix('/device_groups_topics/{device_groups_topic}')
     ->group(function () {
         Route::patch(
@@ -72,7 +74,7 @@ Route::prefix('/projects/{project}')->group(function () {
     Route::resource('contributors', 'ContributorController')->only(['index', 'destroy']);
 });
 
-Route::post('/count','ContributorController@findUserOnKeyUp');
+Route::post('/count', 'ContributorController@findUserOnKeyUp');
 
 
 Route::prefix('/users/{user_id}')->group(function () {

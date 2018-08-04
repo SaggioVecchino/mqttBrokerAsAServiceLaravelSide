@@ -49601,6 +49601,7 @@ var render = function() {
                       "\n                "
                   ),
                   _c("confirm", {
+                    staticStyle: { display: "inline" },
                     attrs: {
                       btncontent: "Delete",
                       modalId: "delete" + element.id + _vm.type + _vm.allow,

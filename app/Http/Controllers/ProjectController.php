@@ -337,7 +337,7 @@ class ProjectController extends Controller
                 'json' => $body
             ];
 
-            $link = 'localhost:1233';
+            $link = 'iot2.brainiac.dz:1233';
 
             $response['series'] = json_decode((new Client())->request('POST', 'http://' . $link . '/data/' . $project_id, $requestContent)
                 ->getBody()->getContents());
@@ -484,7 +484,7 @@ class ProjectController extends Controller
                 'json' => $body
             ];
 
-            $link = 'localhost:1233';
+            $link = 'iot2.brainiac.dz:1233';
 
             $response = json_decode((new Client())->request('POST', 'http://' . $link . '/data/' . $project_id, $requestContent)
                 ->getBody()->getContents());
