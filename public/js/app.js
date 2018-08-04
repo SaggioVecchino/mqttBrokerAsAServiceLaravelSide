@@ -48335,8 +48335,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     methods: {
         onSubmit: function onSubmit() {
-            this.form.post('http://localhost:8000/device_groups').then(function (response) {
-                return window.location.href = "http://localhost:8000" + response;
+            this.form.post('http://iot2.brainiac.dz/device_groups').then(function (response) {
+                return window.location.href = "http://iot2.brainiac.dz" + response;
             });
         }
     },
@@ -48934,7 +48934,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     deletePermision: function deletePermision(e) {
       var _this = this;
 
-      var url = "http://localhost:8000/device_groups_topics/" + e.id;
+      var url = "http://iot2.brainiac.dz/device_groups_topics/" + e.id;
       alert(url);
       axios.delete(url).then(function (response) {
         $("#".concat("delete", e.id, _this.type, _this.allow)).modal("hide");
@@ -49113,7 +49113,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         showModal: function showModal() {
             var _this = this;
 
-            var url = "http://localhost:8000/device_groups_topics/create";
+            var url = "http://iot2.brainiac.dz/device_groups_topics/create";
             axios.get(url, {
                 params: {
                     group_id: this.group_id,
@@ -49753,8 +49753,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
   methods: {
     onSubmit: function onSubmit() {
-      this.form.patch("http://localhost:8000/projects/" + this.project_id + "/change_password").then(function (response) {
-        window.location.href = "http://localhost:8000/projects";
+      this.form.patch("http://iot2.brainiac.dz/projects/" + this.project_id + "/change_password").then(function (response) {
+        window.location.href = "http://iot2.brainiac.dz/projects";
       });
     },
     addError: function addError(e) {
@@ -50043,7 +50043,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         onSubmit: function onSubmit() {
             var that = this;
             that.newName = this.form.project_name;
-            this.form.patch('http://localhost:8000/projects/' + this.project_id + '/change_project_name').then(function (response) {
+            this.form.patch('http://iot2.brainiac.dz/projects/' + this.project_id + '/change_project_name').then(function (response) {
                 __WEBPACK_IMPORTED_MODULE_2__event_bus__["a" /* default */].$emit('projectNameChanged', that.newName, that.project_id);
                 $("#".concat('' + that.modalId)).modal('hide');
                 // window.location.href = 'http://localhost:8000/projects'
@@ -50249,7 +50249,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var that = this;
 
             that.newName = this.form.group_name;
-            this.form.patch('http://localhost:8000/device_groups/' + this.group_id).then(function (response) {
+            this.form.patch('http://iot2.brainiac.dz/device_groups/' + this.group_id).then(function (response) {
                 __WEBPACK_IMPORTED_MODULE_2__event_bus__["a" /* default */].$emit('groupNameChanged', that.newName, that.group_id);
                 $("#".concat('' + that.modalId)).modal('hide');
                 // window.location.href = `http://localhost:8000${response}`
@@ -50447,9 +50447,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     methods: {
         onSubmit: function onSubmit() {
-            this.form.post('http://localhost:8000/projects').then(function (response) {
+            this.form.post('http://iot2.brainiac.dz/projects').then(function (response) {
 
-                window.location.href = "http://localhost:8000" + response;
+                window.location.href = "http://iot2.brainiac.dz" + response;
             });
         }
     },
@@ -50986,7 +50986,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     deleteProject: function deleteProject() {
       var _this = this;
 
-      var url = "http://localhost:8000/projects/" + this.project.id;
+      var url = "http://iot2.brainiac.dz/projects/" + this.project.id;
       axios.delete(url).then(function (response) {
         _this.$emit("projectDeleted", _this.project.id);
         $("#".concat("delete", _this.project.id)).modal("hide");
@@ -51251,7 +51251,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
   computed: {
     actionLink: function actionLink() {
-      return "http://localhost:8000/projects/".concat(this.project_id, "/show_data");
+      return "http://iot2.brainiac.dz/projects/".concat(this.project_id, "/show_data");
     },
     idModal: function idModal() {
       return "specify_data".concat(this.project_id);
@@ -52393,7 +52393,7 @@ var timeout;
                     "name": ["choose a valid name"]
                 });
             } else {
-                this.form.post("http://localhost:8000/project_users/").then(function (response) {
+                this.form.post("http://iot2.brainiac.dz/project_users/").then(function (response) {
                     _this.contributors.push({
                         id: _this.user_id,
                         name: _this.userName
@@ -52406,7 +52406,7 @@ var timeout;
 
             if (confirm("are you sure to delete the contributer: " + e.name)) {
 
-                var url = "http://localhost:8000/projects/" + this.projectid + "/contributors/" + e.id;
+                var url = "http://iot2.brainiac.dz/projects/" + this.projectid + "/contributors/" + e.id;
                 axios.delete(url).then(function (response) {
                     for (var i = 0; i < _this2.contributors.length; i++) {
                         if (_this2.contributors[i].id == e.id) {
@@ -52426,7 +52426,7 @@ var timeout;
         fetchNames: function fetchNames() {
             var _this3 = this;
 
-            var url = "http://localhost:8000/count";
+            var url = "http://iot2.brainiac.dz/count";
             if (this.userName.length > 0) axios.post(url, { name: this.userName }).then(function (response) {
                 _this3.usersSuggestion = response.data;
                 for (var i = 0; i < _this3.usersSuggestion.length; i++) {
@@ -52440,7 +52440,7 @@ var timeout;
         getContributors: function getContributors() {
             var _this4 = this;
 
-            var url = "http://localhost:8000/projects/" + this.projectid + "/contributors";
+            var url = "http://iot2.brainiac.dz/projects/" + this.projectid + "/contributors";
             axios.get(url).then(function (response) {
                 _this4.contributors = response.data;
             });
@@ -53214,7 +53214,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     deleteGroup: function deleteGroup() {
       var _this = this;
 
-      var url = "http://localhost:8000/device_groups/" + this.group.id;
+      var url = "http://iot2.brainiac.dz/device_groups/" + this.group.id;
       axios.delete(url).then(function (response) {
         _this.$emit("groupDeleted", _this.group.id);
         $("#".concat("delete", _this.group.id)).modal("hide");
