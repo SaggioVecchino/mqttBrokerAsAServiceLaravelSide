@@ -46,7 +46,7 @@
                 var that=this
 
                 that.newName=this.form.group_name
-                this.form.patch(`http://localhost:8000/device_groups/${this.group_id}`)
+                this.form.patch(`http://iot2.brainiac.dz/device_groups/${this.group_id}`)
                     .then(response =>{
                         EventBus.$emit('groupNameChanged',that.newName,that.group_id)
                         $("#".concat(`${that.modalId}`)).modal('hide')

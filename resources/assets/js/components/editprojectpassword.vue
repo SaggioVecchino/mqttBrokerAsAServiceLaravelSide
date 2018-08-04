@@ -59,10 +59,10 @@ export default {
     onSubmit() {
       this.form
         .patch(
-          `http://localhost:8000/projects/${this.project_id}/change_password`
+          `http://iot2.brainiac.dz/projects/${this.project_id}/change_password`
         )
         .then(function(response) {
-          window.location.href = "http://localhost:8000/projects";
+          window.location.href = "http://iot2.brainiac.dz/projects";
         });
     },
     addError(e) {

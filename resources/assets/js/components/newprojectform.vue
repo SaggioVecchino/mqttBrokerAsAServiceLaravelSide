@@ -44,10 +44,10 @@
 
         methods: {
             onSubmit() {
-                this.form.post('http://localhost:8000/projects')
+                this.form.post('http://iot2.brainiac.dz/projects')
                     .then(response => {
 
-                        window.location.href = `http://localhost:8000${response}`
+                        window.location.href = `http://iot2.brainiac.dz${response}`
                     });
             }
         },

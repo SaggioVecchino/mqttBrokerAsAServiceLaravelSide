@@ -100,7 +100,7 @@
                     )
                 }
                 else{
-                    this.form.post(`http://localhost:8000/project_users/`)
+                    this.form.post(`http://iot2.brainiac.dz/project_users/`)
                         .then(response =>{
                             this.contributors.push({
                                 id:this.user_id,
@@ -114,7 +114,7 @@
                if (confirm(`are you sure to delete the contributer: ${e.name}`))
                {
 
-                   let url=`http://localhost:8000/projects/${this.projectid}/contributors/${e.id}`
+                   let url=`http://iot2.brainiac.dz/projects/${this.projectid}/contributors/${e.id}`
                    axios.delete(url)
                        .then(
                            response => {
@@ -136,7 +136,7 @@
                 timeout = setTimeout(this.fetchNames,500)
             },
             fetchNames() {
-                let url = "http://localhost:8000/count"
+                let url = "http://iot2.brainiac.dz/count"
                 if (this.userName.length > 0)
                     axios.post(url, {name: this.userName}).then(response => {
                         this.usersSuggestion = response.data
@@ -150,7 +150,7 @@
                     })
             },
             getContributors(){
-                let url = `http://localhost:8000/projects/${this.projectid}/contributors`
+                let url = `http://iot2.brainiac.dz/projects/${this.projectid}/contributors`
                 axios.get(url).then(response => {
                     this.contributors = response.data
                 })

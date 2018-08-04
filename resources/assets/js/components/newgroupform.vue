@@ -43,8 +43,8 @@
         },
         methods: {
             onSubmit() {
-                this.form.post('http://localhost:8000/device_groups')
-                    .then(response => window.location.href = `http://localhost:8000${response}`);
+                this.form.post('http://iot2.brainiac.dz/device_groups')
+                    .then(response => window.location.href = `http://iot2.brainiac.dz${response}`);
             }
         },
         mounted() {

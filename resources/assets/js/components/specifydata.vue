@@ -171,7 +171,7 @@ export default {
   },
   computed: {
     actionLink() {
-      return "http://localhost:8000/projects/".concat(
+      return "http://iot2.brainiac.dz/projects/".concat(
         this.project_id,
         "/show_data"
       );

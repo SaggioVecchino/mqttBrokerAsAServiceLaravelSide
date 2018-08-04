@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     deletePermision(e) {
-      let url = `http://localhost:8000/device_groups_topics/${e.id}`;
+      let url = `http://iot2.brainiac.dz/device_groups_topics/${e.id}`;
       alert(url);
       axios
         .delete(url)

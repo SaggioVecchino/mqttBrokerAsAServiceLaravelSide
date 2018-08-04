@@ -39,7 +39,7 @@ export default {
   props: ["group"],
   methods: {
     deleteGroup() {
-      var url = `http://localhost:8000/device_groups/${this.group.id}`;
+      var url = `http://iot2.brainiac.dz/device_groups/${this.group.id}`;
       axios.delete(url).then(response => {
         this.$emit("groupDeleted", this.group.id);
         $("#".concat("delete", this.group.id)).modal("hide");

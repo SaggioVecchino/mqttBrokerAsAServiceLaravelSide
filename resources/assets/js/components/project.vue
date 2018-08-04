@@ -70,7 +70,7 @@ export default {
   props: ["project", "userid"],
   methods: {
     deleteProject() {
-      var url = `http://localhost:8000/projects/${this.project.id}`;
+      var url = `http://iot2.brainiac.dz/projects/${this.project.id}`;
       axios.delete(url).then(response => {
         this.$emit("projectDeleted", this.project.id);
         $("#".concat("delete", this.project.id)).modal("hide");

@@ -42,7 +42,7 @@
             onSubmit() {
                 var that=this
                 that.newName=this.form.project_name
-                this.form.patch(`http://localhost:8000/projects/${this.project_id}/change_project_name`)
+                this.form.patch(`http://iot2.brainiac.dz/projects/${this.project_id}/change_project_name`)
                     .then(response =>{
                         EventBus.$emit('projectNameChanged',that.newName,that.project_id)
                         $("#".concat(`${that.modalId}`)).modal('hide')

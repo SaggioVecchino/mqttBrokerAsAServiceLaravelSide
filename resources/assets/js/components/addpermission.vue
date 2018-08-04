@@ -101,7 +101,7 @@
         components: {'modal': modal},
         methods: {
             showModal() {
-                var url = `http://localhost:8000/device_groups_topics/create`
+                var url = `http://iot2.brainiac.dz/device_groups_topics/create`
                 axios.get(url, {
                     params: {
                         group_id: this.group_id,
