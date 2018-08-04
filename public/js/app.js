@@ -49142,12 +49142,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             return "topicNameSelectId".concat(this.newTopicForm.type, this.newTopicForm.allow);
         },
         newTopicFormOnSubmit: function newTopicFormOnSubmit() {
-            this.newTopicForm.post("http://localhost:8000/device_groups_topics").then(function (response) {
+            this.newTopicForm.post("http://iot2.brainiac.dz/device_groups_topics").then(function (response) {
                 window.location.href = response;
             });
         },
         selectTopicFormOnSubmit: function selectTopicFormOnSubmit() {
-            this.selectTopicForm.post("http://localhost:8000/device_groups_topics").then(function (response) {
+            this.selectTopicForm.post("http://iot2.brainiac.dz/device_groups_topics").then(function (response) {
                 window.location.href = response;
             });
         }

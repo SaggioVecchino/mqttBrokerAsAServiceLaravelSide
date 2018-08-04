@@ -132,13 +132,13 @@
                 return `topicNameSelectId`.concat(this.newTopicForm.type, this.newTopicForm.allow)
             },
             newTopicFormOnSubmit() {
-                this.newTopicForm.post(`http://localhost:8000/device_groups_topics`)
+                this.newTopicForm.post(`http://iot2.brainiac.dz/device_groups_topics`)
                     .then(function (response) {
                         window.location.href = response;
                     })
             },
             selectTopicFormOnSubmit() {
-                this.selectTopicForm.post(`http://localhost:8000/device_groups_topics`)
+                this.selectTopicForm.post(`http://iot2.brainiac.dz/device_groups_topics`)
                     .then(function (response) {
                         window.location.href = response;
                     })
